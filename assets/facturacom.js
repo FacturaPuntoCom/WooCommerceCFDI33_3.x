@@ -783,7 +783,7 @@ jQuery(document).ready( function($) {
       if(response.metadata != null && response.metadata.code == 101){
         $('#result-msg-title').text(response.message);
         $('#btn-success-pdf').stop().show();
-        $('#btn-success-xml').stop().show()
+        $('#btn-success-xml').stop().show();
         document.getElementById("btn-success-pdf").onclick=function(){downloadFile(response.metadata.uid, 'pdf')};
         document.getElementById("btn-success-xml").onclick=function(){downloadFile(response.metadata.uid, 'xml')};
         $('#step-one').stop().hide();
@@ -924,6 +924,8 @@ jQuery(document).ready( function($) {
 
       if(response.invoice.response == 'success'){
         //   $('#btn-success-email').stop().show().attr('data-invoice', response.invoice.invoice_uid);
+        $('#btn-success-pdf').stop().show();
+        $('#btn-success-xml').stop().show();
         document.getElementById("btn-success-pdf").onclick=function(){downloadFile(response.invoice.invoice_uid, 'pdf')};
         document.getElementById("btn-success-xml").onclick=function(){downloadFile(response.invoice.invoice_uid, 'xml')};
       }else{
