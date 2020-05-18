@@ -51,21 +51,22 @@ jQuery(document).ready( function($) {
       form_data = $('#facturacom_settings').serializeArray();
       data = {
         action      : 'save_config',
-        apikey      : form_data[0].value,
-        apisecret   : form_data[1].value,
-        serie       : form_data[2].value,
-        dayoff      : form_data[3].value,
-        title       : form_data[4].value,
-        description : form_data[5].value,
-        colorheader : form_data[6].value,
-        colorfont   : form_data[7].value,
-        emisor_name : form_data[8].value,
-        emisor_rfc  : form_data[9].value,
-        emisor_address1 : form_data[10].value,
-        emisor_address2 : form_data[11].value,
-        emisor_address3 : form_data[12].value,
-        UsoCFDI : form_data[13].value,
-        sitax : form_data[14].value,
+        api_mode    : form_data[0].value,
+        apikey      : form_data[1].value,
+        apisecret   : form_data[2].value,
+        serie       : form_data[3].value,
+        dayoff      : form_data[4].value,
+        title       : form_data[5].value,
+        description : form_data[6].value,
+        colorheader : form_data[7].value,
+        colorfont   : form_data[8].value,
+        emisor_name : form_data[9].value,
+        emisor_rfc  : form_data[10].value,
+        emisor_address1 : form_data[11].value,
+        emisor_address2 : form_data[12].value,
+        emisor_address3 : form_data[13].value,
+        UsoCFDI : form_data[14].value,
+        sitax : form_data[15].value,
       }
       $.post(myAjax.ajaxurl, data, function(response){
         $('#setting_loading').fadeOut('fast');
@@ -717,6 +718,39 @@ jQuery(document).ready( function($) {
     return $.cookie(cname);
   }
 
+  //function downloadFile
+  function downloadFile(uid, type) {
+    var data = {
+      action : 'download_file',
+      uid    : uid,
+      type   : type,
+    };
+
+    $.post(myAjax.ajaxurl, data, function(response){
+      console.log(response)
+      var b64 = response.file.toString();
+
+      // Decodificar la cadena para mostrar contenido pdf
+      var bin = atob(b64);
+
+      // Insertar el link que contendrá el archivo pdf
+      var link = document.createElement('a');
+      if(type == 'pdf') {
+        link.download = uid + '.pdf';
+      } else {
+        link.download = uid + '.xml';
+      }
+
+      link.href = 'data:application/octet-stream;base64,' + b64;
+      document.body.appendChild(link);
+      link.click();
+
+      setTimeout(function() {
+        link.remove();
+      }, 0);
+    }, "json");
+  }
+
   //STEP ONE
   $('#f-step-one-form').submit(function(e){
     e.preventDefault();
@@ -748,17 +782,25 @@ jQuery(document).ready( function($) {
       console.log(response);
       if(response.metadata != null && response.metadata.code == 101){
         $('#result-msg-title').text(response.message);
-        // $('#btn-success-email').stop().show().attr('data-invoice', response.metadata.uid);
-        $('#btn-success-pdf').stop().show().attr('href','https://factura.com/api/publica/cfdi33/'+response.metadata.uid+'/pdf');
-        $('#btn-success-xml').stop().show().attr('href','https://factura.com/api/publica/cfdi33/'+response.metadata.uid+'/xml');
+        $('#btn-success-pdf').stop().show();
+        $('#btn-success-xml').stop().show()
+        document.getElementById("btn-success-pdf").onclick=function(){downloadFile(response.metadata.uid, 'pdf')};
+        document.getElementById("btn-success-xml").onclick=function(){downloadFile(response.metadata.uid, 'xml')};
         $('#step-one').stop().hide();
         $('#step-four').stop().fadeIn('slow');
         return false;
       }
 
-      if(!response.success){
+      if(!response.success) {
         var inst = $('[data-remodal-id=respuesta-paso-uno]').remodal();
         $('#message-response-one').text(response.message);
+        inst.open();
+        return false;
+      }
+
+      if(response.customer.status == 'error' && response.customer.message !== 'El cliente no existe'){
+        var inst = $('[data-remodal-id=respuesta-paso-uno]').remodal();
+        $('#message-response-one').text(response.customer.message);
         inst.open();
         return false;
       }
@@ -882,8 +924,8 @@ jQuery(document).ready( function($) {
 
       if(response.invoice.response == 'success'){
         //   $('#btn-success-email').stop().show().attr('data-invoice', response.invoice.invoice_uid);
-        $('#btn-success-pdf').stop().show().attr('href','https://factura.com/api/publica/cfdi33/'+response.invoice.invoice_uid+'/pdf');
-        $('#btn-success-xml').stop().show().attr('href','https://factura.com/api/publica/cfdi33/'+response.invoice.invoice_uid+'/xml');
+        document.getElementById("btn-success-pdf").onclick=function(){downloadFile(response.invoice.invoice_uid, 'pdf')};
+        document.getElementById("btn-success-xml").onclick=function(){downloadFile(response.invoice.invoice_uid, 'xml')};
       }else{
         $("#result-msg-title").text(response.invoice.message.message);
 

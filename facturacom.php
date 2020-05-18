@@ -11,7 +11,8 @@ include( plugin_dir_path( __FILE__ ) . 'inc/factura-wrapper.php');
 
 define( 'FACTURACOM__PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'FACTURACOM__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'FACTURACOM__APIURL', 'https://factura.com/api/v1/');
+define( 'FACTURACOM__APIURL', 'https://factura.com/api/');
+define( 'FACTURACOM__APIURLDEV', 'http://devfactura.in/api/');
 define( 'FACTURACOM__SYSURL', 'https://factura.com/api/');
 
 //init hooks
@@ -176,6 +177,21 @@ function facturacom_settings(){
           <th colspan="2">
             <h3>Datos de Factura.com</h3>
           </th>
+        </tr>
+        <tr valign="top">
+          <th scope="row" class="titledesc">
+            <label for="api_mode">Modo API*</label>
+          </th>
+          <td class="forminp">
+            <fieldset>
+              <select id="api_mode" class="form-control" name="api_mode">
+                <?php
+                  $dato = $settings['api_mode'];
+                  getApiMode($dato);
+                ?>
+              </select>
+            </fieldset>
+          </td>
         </tr>
         <tr valign="top">
           <th scope="row" class="titledesc">
@@ -395,6 +411,25 @@ function getUsoCfdi($dato){
   }
 }
 
+function getApiMode($dato) {
+  $api_mode = array('sandbox' => 'Sandbox', 'production' => 'Production');
+
+  foreach ($api_mode as $key => $name)
+  {
+    echo "<option value='$key'";
+    if ($key == $dato)
+    {
+      echo ' selected>';
+    }
+    else
+    {
+      echo '>';
+    }
+    echo $name;
+    echo '</option>';
+  }
+}
+
 // Pinta el listado de PRecios con o sin IVA y selecciona el configurado por el usuario
 function getTaxConfig($dato){
   $c_taxconf = array(
@@ -453,12 +488,15 @@ add_action( 'wp_ajax_save_config', 'save_config_callback' );
 function save_config_callback() {
   global $wpdb;
 
+  $apiUrl = ($_POST['api_mode'] == 'sandbox') ? FACTURACOM__APIURLDEV : FACTURACOM__APIURL;
+
   $settings = array(
+    'api_mode'    => $_POST['api_mode'],
     'apikey'      => $_POST['apikey'],
     'apisecret'   => $_POST['apisecret'],
     'serie'       => $_POST['serie'],
     'dayoff'      => $_POST['dayoff'],
-    'apiurl'      => FACTURACOM__APIURL,
+    'apiurl'      => $apiUrl,
     'title'       => $_POST['title'],
     'description' => $_POST['description'],
     'colorheader' => $_POST['colorheader'],
@@ -616,5 +654,23 @@ function generate_invoice_callback(){
   unset($_SESSION['order']);
 
   echo json_encode($response, JSON_PRETTY_PRINT);
+  die;
+}
+
+add_action( 'wp_ajax_download_file', 'download_file_callback' );
+function download_file_callback(){
+
+  $data = array(
+      'uid' => $_POST['uid'],
+      'type' => $_POST['type']
+  );
+
+  $response = FacturaWrapper::downloadFile($data);
+
+  header('Content-type: application/json');
+  $file = array('file' => base64_encode($response));
+
+  echo json_encode($file);
+  
   die;
 }

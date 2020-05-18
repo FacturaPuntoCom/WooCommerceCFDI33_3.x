@@ -309,8 +309,8 @@ class FacturaWrapper{
       <h4 id="result-email-msg"></h4>
       <h4 id="result-msg"></h4>
       <a href="#" id="btn-success-email" class="btn-success invoice-button invoice-pdf" target="_blank">Enviar por correo electr&oacute;nico</a>
-      <a href="#" id="btn-success-pdf" class="btn-success invoice-button invoice-pdf" target="_blank" style="background:'.$configEntity['colorheader'].'!important; color:'.$configEntity['colorfont'].'!important;">Descargar PDF</a>
-      <a href="#" id="btn-success-xml" class="btn-success invoice-button invoice-xml" target="_blank" style="background:'.$configEntity['colorheader'].'!important; color:'.$configEntity['colorfont'].'!important;">Descargar XML</a>
+      <button id="btn-success-pdf" class="btn-success invoice-button invoice-pdf" style="background:'.$configEntity['colorheader'].'!important; color:'.$configEntity['colorfont'].'!important;">Descargar PDF</button>
+      <button id="btn-success-xml" class="btn-success invoice-button invoice-xml" style="background:'.$configEntity['colorheader'].'!important; color:'.$configEntity['colorfont'].'!important;">Descargar XML</button>
       </div>
       <div id="out-message">
       <h3>Ya puedes cerrar &eacute;sta p&aacute;gina o <a href="'.get_site_url().'">seguir navegando</a>.</h3>
@@ -361,7 +361,7 @@ class FacturaWrapper{
     static function getInvoices(){
 
       $configEntity = self::getConfigEntity();
-      $url     = $configEntity['apiurl'] . 'invoices';
+      $url     = $configEntity['apiurl'] . 'v3/cdfi33/list';
       $request = 'GET';
 
       return WrapperApi::callCurl($url, $request);
@@ -382,7 +382,7 @@ class FacturaWrapper{
 
       $configEntity = self::getConfigEntity();
 
-      $url     = $configEntity['apiurl'] . 'invoice/' . $uid . '/email';
+      $url     = $configEntity['apiurl'] . 'v3/cfdi33/invoice/' . $uid . '/email';
       $request = 'GET';
 
       return WrapperApi::callCurl($url, $request);
@@ -403,7 +403,7 @@ class FacturaWrapper{
 
       $configEntity = self::getConfigEntity();
 
-      $url     = $configEntity['apiurl'] . 'invoice/' . $uid . '/cancel';
+      $url     = $configEntity['apiurl'] . 'v3/cfdi33/invoice/' . $uid . '/cancel';
       $request = 'GET';
 
       return WrapperApi::callCurl($url, $request);
@@ -427,7 +427,8 @@ class FacturaWrapper{
       $configEntity = self::getConfigEntity();
 
       // $url = $configEntity['apiurl'] . 'invoices?rfc=' . $rfc . '&num_order=' . $orderId;
-      $url = 'https://factura.com/api/v3/cfdi33/list' . '?rfc=' . $rfc;
+      $url     = $configEntity['apiurl'] . 'v3/cfdi33/list?rfc=' . $rfc;
+      //$url = 'https://factura.com/api/v3/cfdi33/list' . '?rfc=' . $rfc;
       $request = 'GET';
 
       // $invoideData = WrapperApi::callCurl($url, $request)->data;
@@ -464,7 +465,7 @@ class FacturaWrapper{
 
       $configEntity = self::getConfigEntity();
 
-      $url = $configEntity['apiurl'] . 'clients/' . $rfc;
+      $url = $configEntity['apiurl'] . 'v1/clients/' . $rfc;
       // var_dump($url);
       $request = 'GET';
 
@@ -637,8 +638,9 @@ class FacturaWrapper{
     static function generateInvoice($payment_data){
       $configEntity = self::getConfigEntity();
       // var_dump($configEntity);
-      // $url = $configEntity['apiurl'] . "invoice/create";
-      $url = "https://factura.com/api/v3/cfdi33/create";
+      $url = $configEntity['apiurl'] . "v3/cfdi33/create";
+      //$url = "https://factura.com/api/v3/cfdi33/create";
+
       $request = 'POST';
 
       $order = FacturaWrapper::getCookies('order');
@@ -816,7 +818,8 @@ class FacturaWrapper{
       public function check_serie(){
         $configEntity = self::getConfigEntity();
 
-          $url = 'https://factura.com/api/v1/series';
+        $url = $configEntity['apiurl'] . "v1/series";
+        //$url = 'https://factura.com/api/v1/series';
 
         $request = 'GET';
         // $params = array(
@@ -851,9 +854,11 @@ class FacturaWrapper{
         $configEntity = self::getConfigEntity();
 
         if($data["api_method"] == "create"){
-          $url = 'https://factura.com/api/v1/' . 'clients/create';
+          $url = $configEntity['apiurl'] . "v1/clients/create";
+          //$url = 'https://factura.com/api/v1/' . 'clients/create';
         }else{
-          $url = 'https://factura.com/api/v1/' . "clients/".$data["uid"]."/update";
+          $url = $configEntity['apiurl'] . "v1/clients/".$data["uid"]."/update";
+          //$url = 'https://factura.com/api/v1/' . "clients/".$data["uid"]."/update";
         }
 
         $request = 'POST';
@@ -892,6 +897,20 @@ class FacturaWrapper{
         //change to invoiced
         $order = new WC_Order($order_id);
         $order->update_status($new_status, '');
+      }
+
+      /**
+      *
+      */
+      static function downloadFile($data){
+
+        $configEntity = self::getConfigEntity();
+
+        $url = $configEntity['apiurl'] . 'v3/cfdi33/'.$data['uid'].'/'.$data['type'];
+
+        $request = 'GET';
+
+        return WrapperApi::callCurl($url, $request, null, true);
       }
 
 

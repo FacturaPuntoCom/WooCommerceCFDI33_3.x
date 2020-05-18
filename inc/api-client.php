@@ -10,7 +10,7 @@ class WrapperApi{
      * @param Array $params
      * @return Object
      */
-    static function callCurl($url, $request, $params = null){
+    static function callCurl($url, $request, $params = null, $file_option = null){
 
         $ch = curl_init();
 
@@ -71,6 +71,9 @@ class WrapperApi{
         fclose($fh);
 
         //return array
+        if($file_option != null)
+          return $data;
+          
         return json_decode($data);
     }
 

@@ -14,3 +14,10 @@ desde el panel de administración.
 - Funcionalidad para que los clientes creen facturas directamente desde el área
 de clientes.
 Reportes de historial de facturas y pedidos pendientes de facturar.
+
+## Fix 18/05/20
+
+- Descarga de documentos
+- Modo Api: Sandbox & Production
+- Mejoras de mensajes de error
+- Cambios endpoints

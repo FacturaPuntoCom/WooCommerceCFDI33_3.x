@@ -2,6 +2,7 @@
 
 class FacturaConfig {
 
+    static $api_mode   = '';
     static $apiUrl      = '';
     static $apiKey      = '';
 	static $apiSecret   = '';
@@ -30,6 +31,8 @@ class FacturaConfig {
       // if($serie == true){
 
         $configFile = fopen(dirname(__FILE__) .'/facturacom.conf', 'w') or die('Unable to open file!');
+        //write ApiMode
+        fwrite($configFile, ApiHelper::strEncode($settings['api_mode'])."\n");
         //write apiKey
         fwrite($configFile, ApiHelper::strEncode($settings['apikey'])."\n");
         //write apiSecret
@@ -82,22 +85,23 @@ class FacturaConfig {
         $configVars = self::getConf();
         // var_dump($configVars[13]);
         return array(
-            'apikey'      => ApiHelper::strDecode($configVars[0]),
-            'apisecret'   => ApiHelper::strDecode($configVars[1]),
-            'serie'       => ApiHelper::strDecode($configVars[2]),
-            'dayoff'      => ApiHelper::strDecode($configVars[3]),
-            'apiurl'      => ApiHelper::strDecode($configVars[4]),
-            'title'       => ApiHelper::strDecode($configVars[5]),
-            'description' => ApiHelper::strDecode($configVars[6]),
-            'colorheader' => ApiHelper::strDecode($configVars[7]),
-            'colorfont' => ApiHelper::strDecode($configVars[8]),
-            'emisor_name' => ApiHelper::strDecode($configVars[9]),
-            'emisor_rfc' => ApiHelper::strDecode($configVars[10]),
-            'emisor_address1' => ApiHelper::strDecode($configVars[11]),
-            'emisor_address2' => ApiHelper::strDecode($configVars[12]),
-            'emisor_address3' => ApiHelper::strDecode($configVars[13]),
-            'UsoCFDI' => ApiHelper::strDecode($configVars[14]),
-            'sitax' => ApiHelper::strDecode($configVars[15]),
+            'api_mode'    => ApiHelper::strDecode($configVars[0]),
+            'apikey'      => ApiHelper::strDecode($configVars[1]),
+            'apisecret'   => ApiHelper::strDecode($configVars[2]),
+            'serie'       => ApiHelper::strDecode($configVars[3]),
+            'dayoff'      => ApiHelper::strDecode($configVars[4]),
+            'apiurl'      => ApiHelper::strDecode($configVars[5]),
+            'title'       => ApiHelper::strDecode($configVars[6]),
+            'description' => ApiHelper::strDecode($configVars[7]),
+            'colorheader' => ApiHelper::strDecode($configVars[8]),
+            'colorfont' => ApiHelper::strDecode($configVars[9]),
+            'emisor_name' => ApiHelper::strDecode($configVars[10]),
+            'emisor_rfc' => ApiHelper::strDecode($configVars[11]),
+            'emisor_address1' => ApiHelper::strDecode($configVars[12]),
+            'emisor_address2' => ApiHelper::strDecode($configVars[13]),
+            'emisor_address3' => ApiHelper::strDecode($configVars[14]),
+            'UsoCFDI' => ApiHelper::strDecode($configVars[15]),
+            'sitax' => ApiHelper::strDecode($configVars[16]),
         );
     }
 
