@@ -361,7 +361,7 @@ class FacturaWrapper{
     static function getInvoices(){
 
       $configEntity = self::getConfigEntity();
-      $url     = $configEntity['apiurl'] . 'v3/cdfi33/list';
+      $url     = $configEntity['apiurl'] . 'v3/cfdi33/list';
       $request = 'GET';
 
       return WrapperApi::callCurl($url, $request);
