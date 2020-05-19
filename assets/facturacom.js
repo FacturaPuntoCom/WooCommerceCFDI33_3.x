@@ -928,15 +928,20 @@ jQuery(document).ready( function($) {
         $('#btn-success-xml').stop().show();
         document.getElementById("btn-success-pdf").onclick=function(){downloadFile(response.invoice.invoice_uid, 'pdf')};
         document.getElementById("btn-success-xml").onclick=function(){downloadFile(response.invoice.invoice_uid, 'xml')};
-      }else{
-        $("#result-msg-title").text(response.invoice.message.message);
 
-        //   $('#btn-success-email').stop().hide();
+        $("#step-four").stop().fadeIn("slow");
+      }else{
+        var inst = $('[data-remodal-id=respuesta-paso-uno]').remodal();
+        $('#message-response-one').text(response.invoice.message);
+        inst.open();
         $('#btn-success-pdf').stop().hide();
         $('#btn-success-xml').stop().hide();
-      }
+        $("#step-three").stop().fadeIn('slow');
+        return false;
 
-      $("#step-four").stop().fadeIn("slow");
+        //$('#btn-success-email').stop().hide();
+
+      }
     }, 'json');
 
   });
