@@ -141,8 +141,16 @@ function facturacom_history(){
             </td>
             <td><?php echo ucfirst($invoice->Status) ?></td>
             <td><?php echo "$".$invoice->Total ?></td>
-            <td><a href="<?php echo FACTURACOM__SYSURL ?>publica/cfdi33/<?php echo $invoice->UID ?>/pdf">PDF</a></td>
-            <td><a href="<?php echo FACTURACOM__SYSURL ?>publica/cfdi33/<?php echo $invoice->UID ?>/xml">XML</a></td>
+            <td>
+              <a href="#" class="button download_file" data-uid="<?php echo $invoice->UID ?>" data-type="pdf">
+                PDF
+              </a>
+            </td>
+            <td>
+              <a href="#" class="button download_file" data-uid="<?php echo $invoice->UID ?>" data-type="xml">
+                XML
+              </a>
+            </td>
             <td>
               <a href="#" class="button button-primary send_invoice" data-uid="<?php echo $invoice->UID ?>">
                 Enviar por correo
@@ -671,6 +679,6 @@ function download_file_callback(){
   $file = array('file' => base64_encode($response));
 
   echo json_encode($file);
-  
+
   die;
 }

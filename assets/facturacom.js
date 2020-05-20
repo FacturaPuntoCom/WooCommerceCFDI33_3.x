@@ -131,6 +131,42 @@ jQuery(document).ready( function($) {
     }
   }
 
+  $('.download_file').unbind().on('click', function(e){
+    e.preventDefault();
+
+    var uid = jQuery(this).attr('data-uid');
+    var type = jQuery(this).attr('data-type');
+    var data = {
+      action : 'download_file',
+      uid    : uid,
+      type   : type,
+    };
+
+    $.post(myAjax.ajaxurl, data, function(response){
+      var b64 = response.file.toString();
+
+      // Decodificar la cadena para mostrar contenido pdf
+      var bin = atob(b64);
+
+      // Insertar el link que contendrá el archivo pdf
+      var link = document.createElement('a');
+      if(type == 'pdf') {
+        link.download = uid + '.pdf';
+      } else {
+        link.download = uid + '.xml';
+      }
+
+      link.href = 'data:application/octet-stream;base64,' + b64;
+      document.body.appendChild(link);
+      link.click();
+
+      setTimeout(function() {
+        link.remove();
+      }, 0);
+    }, "json");
+
+  });
+
   $('.send_invoice').unbind().on('click', function(e){
     e.preventDefault();
     $(this).html('Enviando factura');
