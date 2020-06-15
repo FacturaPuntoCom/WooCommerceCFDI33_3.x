@@ -15,6 +15,11 @@ desde el panel de administración.
 de clientes.
 Reportes de historial de facturas y pedidos pendientes de facturar.
 
+## Fix 14/06/20
+
+- Nueva Opción de elegir USO CFDI en tienda antes de realizar factura
+- Solución de error al tratar con cantidades decimales de producto (a granel)
+
 ## Fix 18/05/20
 
 - Descarga de documentos
