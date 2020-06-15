@@ -600,6 +600,7 @@ function create_client_callback(){
       'success' => true,
       'customer' => FacturaWrapper::getCookies('customer'),
       'order' => FacturaWrapper::getCookies('order'),
+      'cfdi_use' => $settings['UsoCFDI'],
       'emisor' => array(
         'name' => $settings['emisor_name'],
         'rfc' => $settings['emisor_rfc'],

@@ -905,6 +905,7 @@ jQuery(document).ready( function($) {
       var customer_data = response.customer;
       var order_data    = response.order;
       var emisor_data   = response.emisor;
+      $('#cfdi-use').val(response.cfdi_use).change();
 
       if(!response.success){
         var inst = $('[data-remodal-id=respuesta-paso-dos]').remodal();
@@ -925,6 +926,7 @@ jQuery(document).ready( function($) {
 
     var selected_method = $( "#select-payment option:selected" ).val();
     var selected_method_text = $( "#select-payment option:selected" ).text();
+    var cfdi_use = $( "#cfdi-use option:selected" ).val();
 
     if(selected_method == 0){
       $("#step-three .loader_content").hide();
@@ -950,7 +952,8 @@ jQuery(document).ready( function($) {
       action        : 'generate_invoice',
       payment_m     : selected_method,
       payment_t     : selected_method_text,
-      num_cta_m     : num_cta_method
+      num_cta_m     : num_cta_method,
+      cfdi_use      : cfdi_use
     }
 
     $.post(myAjax.ajaxurl, data, function(response){

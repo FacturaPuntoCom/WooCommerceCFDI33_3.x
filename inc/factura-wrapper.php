@@ -256,6 +256,40 @@ class FacturaWrapper{
       </p>
       </div>
 
+      <div>
+      <h3 class="invoice-header">Uso CFDI</h3>
+      Selecciona el uso cfdi de factura
+      <form id="cfdi-use-form">
+      <!-- Método de pago -->
+      <div class="input-group">
+      <label for="cfdi-use">* UsoCFDI</label>
+      <select id="cfdi-use" class="input-cap f-input f-select">
+      <option value="G01">Adquisición de mercancias</option>
+      <option value="G02">Devoluciones, descuentos o bonificaciones</option>
+      <option value="G03">Gastos en general</option>
+      <option value="I01">Construcciones</option>
+      <option value="I02">Mobilario y equipo de oficina por inversiones</option>
+      <option value="I03">Equipo de transporte</option>
+      <option value="I04">Equipo de computo y accesorios</option>
+      <option value="I05">Dados, troqueles, moldes, matrices y herramental</option>
+      <option value="I06">Comunicaciones telefónicas</option>
+      <option value="I07">Comunicaciones satelitales</option>
+      <option value="I08">Otra maquinaria y equipo</option>
+      <option value="D01">Honorarios médicos, dentales y gastos hospitalarios</option>
+      <option value="D02">Gastos médicos por incapacidad o discapacidad</option>
+      <option value="D03">Gastos funerales</option>
+      <option value="D04">Donativos</option>
+      <option value="D05">Intereses reales efectivamente pagados por créditos hipotecarios (casa habitación)</option>
+      <option value="D06">Aportaciones voluntarias al SAR</option>
+      <option value="D07">Primas por seguros de gastos médicos</option>
+      <option value="D08">Gastos de transportación escolar obligatoria</option>
+      <option value="D09">Depósitos en cuentas para el ahorro, primas que tengan como base planes de pensiones</option>
+      </select>
+      </div>
+      <div class="clearfix"></div>
+      </form>
+      </div>
+
       <div class="invoice-totals">
       <table>
       <tr>
@@ -726,7 +760,8 @@ class FacturaWrapper{
           ],
           // "LugarExpedicion" => "0",
           // "Fecha" => date("Y/m/d"),
-          "UsoCFDI" => $configEntity['UsoCFDI'],
+          //"UsoCFDI" => $configEntity['UsoCFDI'],
+          "UsoCFDI" => $payment_data["cfdi_use"],
           "Serie" => $serie->SerieID,
           "MetodoPago" => "PUE",
           "FormaPago" => $payment_data["method"],

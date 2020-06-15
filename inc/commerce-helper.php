@@ -91,7 +91,8 @@ class CommerceHelper{
                 'line_tax'   => wc_format_decimal( $order->get_line_tax( $item ), 2 ),
                 'item_tax'   => wc_format_decimal( $order->get_item_tax( $item ), 2 ),
             ),
-            'quantity'   => (int) $item['qty'],
+            //'quantity'   => (int) $item['qty'], Problemas con cantidades decimales (a granel, ejemplo: 0.25)
+            'quantity'   => $item['qty'],
             'tax_class'  => ( ! empty( $item['tax_class'] ) ) ? $item['tax_class'] : null,
             'name'       => $item['name'],
             'product_id' => ( isset( $product->variation_id ) ) ? $product->variation_id : $product->id,
