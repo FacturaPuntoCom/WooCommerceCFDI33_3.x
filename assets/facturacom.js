@@ -450,7 +450,7 @@ jQuery(document).ready( function($) {
             calculate_tax = 0.16;
             pre_unit_price = Number(products[key]['total']/products[key]['quantity']);
             tax = Number(pre_unit_price * calculate_tax);
-            taxes=taxes+tax;
+            taxes = taxes + (tax * products[key]['quantity']);
             unit_price = Number(pre_unit_price);
           }
           else{
@@ -463,14 +463,14 @@ jQuery(document).ready( function($) {
           calculate_tax = 0.16;
           pre_unit_price = Number(products[key]['total']/products[key]['quantity']);
           tax = Number(pre_unit_price * calculate_tax);
-          taxes=taxes+tax;
+          taxes = taxes + (tax * products[key]['quantity']);
           unit_price = Number(pre_unit_price);
         }
         else{
           calculate_tax = 0.16;
           pre_unit_price = Number(products[key]['total']/products[key]['quantity']);
           tax = Number(pre_unit_price * calculate_tax);
-          taxes=taxes+tax;
+          taxes = taxes + (tax * products[key]['quantity']);
           unit_price = Number(pre_unit_price);
         }
       }
