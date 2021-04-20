@@ -15,6 +15,10 @@ desde el panel de administración.
 de clientes.
 Reportes de historial de facturas y pedidos pendientes de facturar.
 
+## Fix 20/04/21
+
+- Calculo correcto del IVA
+
 ## Fix 14/06/20
 
 - Nueva Opción de elegir USO CFDI en tienda antes de realizar factura
