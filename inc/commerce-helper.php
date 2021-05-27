@@ -6,6 +6,9 @@ class CommerceHelper{
         // $order = new WC_Order($orderId);
         $order = wc_get_order($orderId);
         // var_dump($order->get_items());
+        if(!$order){
+            return array('Error' => 'El pedido no existe');
+        }
         $order_post = get_post( $orderId );
         $configEntity = FacturaConfig::configEntity();
         $order_data = array(

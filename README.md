@@ -15,6 +15,10 @@ desde el panel de administración.
 de clientes.
 Reportes de historial de facturas y pedidos pendientes de facturar.
 
+## Fix 27/05/21
+
+- Validación cuando el pedido no existe
+
 ## Fix 20/04/21
 
 - Calculo correcto del IVA
