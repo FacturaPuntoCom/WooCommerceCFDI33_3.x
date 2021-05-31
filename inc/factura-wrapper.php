@@ -521,6 +521,9 @@ class FacturaWrapper{
 
       $order = CommerceHelper::getOrderById($orderId);
 
+      if(gettype($order) != 'object'){
+        return array('Error' => 'El pedido no existe');
+      }
       return $order;
     }
 
