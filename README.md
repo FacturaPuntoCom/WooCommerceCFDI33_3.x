@@ -15,6 +15,10 @@ desde el panel de administración.
 de clientes.
 Reportes de historial de facturas y pedidos pendientes de facturar.
 
+## Feature 08/06/2021
+
+- Se agregó el método de pago "Intermediario de pagos"
+
 ## Fix 27/05/21
 
 - Validación cuando el pedido no existe

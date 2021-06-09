@@ -243,6 +243,7 @@ class FacturaWrapper{
       <option value="27">27 - A satisfacción del acreedor</option>
       <option value="28">28 - Tarjeta de débito</option>
       <option value="29">29 - Tarjeta de servicios</option>
+      <option value="31">31 - Intermediario de pagos</option>
       <option value="99">99 - Por definir</option>
       </select>
       </div>
