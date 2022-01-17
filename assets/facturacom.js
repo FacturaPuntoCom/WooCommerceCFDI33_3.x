@@ -422,6 +422,9 @@ jQuery(document).ready( function($) {
         else if(products[key]['type_tax'] == 'taxable'){
           console.log("taxable");
           calculate_tax = 0.16;
+          if(products[key]['F_IVA']) {
+            calculate_tax = products[key]['F_IVA']/100;
+          }
           tax = Number(1 + calculate_tax);
           pre_unit_price = Number(products[key]['total']/products[key]['quantity']);
           unit_price = Number(pre_unit_price / tax);
@@ -461,6 +464,9 @@ jQuery(document).ready( function($) {
         else if(products[key]['type_tax'] == 'taxable'){
           console.log("texable");
           calculate_tax = 0.16;
+          if(products[key]['F_IVA']) {
+            calculate_tax = products[key]['F_IVA']/100;
+          }
           pre_unit_price = Number(products[key]['total']/products[key]['quantity']);
           tax = Number(pre_unit_price * calculate_tax);
           taxes = taxes + (tax * products[key]['quantity']);
@@ -468,6 +474,9 @@ jQuery(document).ready( function($) {
         }
         else{
           calculate_tax = 0.16;
+          if(products[key]['F_IVA']) {
+            calculate_tax = products[key]['F_IVA']/100;
+          }
           pre_unit_price = Number(products[key]['total']/products[key]['quantity']);
           tax = Number(pre_unit_price * calculate_tax);
           taxes = taxes + (tax * products[key]['quantity']);
