@@ -15,6 +15,10 @@ desde el panel de administración.
 de clientes.
 Reportes de historial de facturas y pedidos pendientes de facturar.
 
+## Feature 24/01/2022
+
+- Se agrego F_IVA para permitir el IVA individual por producto
+
 ## Feature 08/06/2021
 
 - Se agregó el método de pago "Intermediario de pagos"
