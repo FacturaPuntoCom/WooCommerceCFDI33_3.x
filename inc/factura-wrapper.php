@@ -586,8 +586,8 @@ class FacturaWrapper{
         );
       }
 
-      //validate order completed status
-      if($order->status != 'completed'){
+      //validate order completed/processing status
+      if($order->status != 'completed' && $order->status != 'processing'){
         return array(
           'Error' => true,
           'Message' => 'Este pedido no se encuentra completado.',
