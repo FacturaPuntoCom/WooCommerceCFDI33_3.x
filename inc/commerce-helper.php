@@ -103,6 +103,7 @@ class CommerceHelper{
             'F_ClaveProdServ'        => $product->get_attribute( 'F_ClaveProdServ' ),
             'F_Unidad'        => $product->get_attribute( 'F_Unidad' ),
             'F_ClaveUnidad'        => $product->get_attribute( 'F_ClaveUnidad' ),
+            'F_IVA'        => $product->get_attribute( 'F_IVA' ),
             'price'   => wc_format_decimal($item['cost'], 2),
             'type_tax' => $product->get_tax_status(),
           );
@@ -134,6 +135,7 @@ class CommerceHelper{
 
 
         }
+
 
         return (object)$order_data;
     }

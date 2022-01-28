@@ -795,7 +795,13 @@ class FacturaWrapper{
           }
 
           // $precioiva = floatval(wc_format_decimal($item['meta']['item_total'], 2 ));
-          $taxx = wc_format_decimal($importe, 2 ) * 0.16;
+          $tasaQuota = "0.16";
+          if(isset($item['F_IVA']) && $item['F_IVA'] != "") {
+            $tasaQuota = $item['F_IVA']/100;  
+            $taxx = wc_format_decimal($importe, 2 ) * $tasaQuota; 
+          }else {
+            $taxx = wc_format_decimal($importe, 2 ) * 0.16;
+          }
 
           if($item['type_tax'] == "none" || $item['type_tax'] == "shipping" && $item['F_ClaveProdServ'] != "78102203"){
             $cfdi['Conceptos'][] = array(
@@ -820,7 +826,7 @@ class FacturaWrapper{
                   "Base" => (floatval(wc_format_decimal($importe, 2 )))*$item['quantity'],
                   "Impuesto" => "002",
                   "TipoFactor" => "Tasa",
-                  "TasaOCuota" => "0.16",
+                  "TasaOCuota" => $tasaQuota,
                   "Importe" => wc_format_decimal($taxx, 2 )*$item['quantity'],
                   ]
                 ),
