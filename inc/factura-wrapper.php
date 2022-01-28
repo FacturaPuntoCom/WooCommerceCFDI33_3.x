@@ -417,7 +417,7 @@ class FacturaWrapper{
 
       $configEntity = self::getConfigEntity();
 
-      $url     = $configEntity['apiurl'] . 'v3/cfdi33/invoice/' . $uid . '/email';
+      $url     = $configEntity['apiurl'] . 'v3/cfdi33/' . $uid . '/email';
       $request = 'GET';
 
       return WrapperApi::callCurl($url, $request);
@@ -429,7 +429,7 @@ class FacturaWrapper{
     * @param Int $uid
     * @return Object
     */
-    static function cancelInvoice($uid){
+    static function cancelInvoice($uid, $motivo, $folioSustituto){
       if(!isset($uid)){
         return array(
           'Error' => 'No se ha recibido el id de la factura.',
@@ -438,10 +438,11 @@ class FacturaWrapper{
 
       $configEntity = self::getConfigEntity();
 
-      $url     = $configEntity['apiurl'] . 'v3/cfdi33/invoice/' . $uid . '/cancel';
-      $request = 'GET';
+      $url = $configEntity['apiurl'] . 'v3/cfdi33/' . $uid . '/cancel';
+      $data = ['motivo' => $motivo, 'folioSustituto' => $folioSustituto];
+      $request = 'POST';
 
-      return WrapperApi::callCurl($url, $request);
+      return WrapperApi::callCurl($url, $request, $data);
     }
 
     /**

@@ -19,6 +19,14 @@ Reportes de historial de facturas y pedidos pendientes de facturar.
 
 - Se agrego F_IVA para permitir el IVA individual por producto
 
+## Feature 14/01/2022
+
+- Se agregó el nuevo modo de cancelación para la reforma físcal 2022
+
+## Fix 14/01/2022
+
+- Se corrigió el bug que no permitía descargar, cancelar o enviar correo en la lista de facturas a apartir de la segunda pagina de la tabla.
+
 ## Feature 08/06/2021
 
 - Se agregó el método de pago "Intermediario de pagos"

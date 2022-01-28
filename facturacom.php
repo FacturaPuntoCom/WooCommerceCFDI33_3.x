@@ -3,7 +3,7 @@
 * Plugin name: Factura punto com para woocommerce
 * Plugin URI: http://factura.com
 * Description: Conecta tu tienda de woocommerce para que tus clientes puedan facturar todos los pedidos.
-* Version: 1.6.7
+* Version: 1.6.8
 * Author: Factura.com
 */
 
@@ -156,9 +156,9 @@ function facturacom_history(){
                 Enviar por correo
               </a>
               <?php if($invoice->Status != "cancelada"): ?>
-                <a href="#" class="button button-secundary cancel_invoice" data-uid="<?php echo $invoice->UID ?>">
+                <button class="button button-secundary cancel_invoice" data-uid="<?php echo $invoice->UID ?>">
                   Cancelar
-                </a>
+                </button>
               <?php endif ?>
             </td>
           </tr>
@@ -172,6 +172,38 @@ function facturacom_history(){
       <?php endif ?>
     </tbody>
   </table>
+
+  <div class="remodal" data-remodal-id="modalCancelacion" role="dialog" data-remodal-options="hashTracking: false, closeOnOutsideClick: false">
+    <button data-remodal-action="close" class="remodal-close" aria-label="Close"></button>
+      <div class="cancelacion">
+        <div class="space">
+          <h2>¿Estas seguro que quieres cancelar esta factura?</h2>
+          <p>Sí es así, por favor selecciona un motivo de cancelación</p>
+          <select id="motivo" class="form-control" name="motivo" placeholder="Selecciona una opción">
+            <option value="01">01 - Comprobante emitido con errores con relación</option>
+            <option value="02">02 - Comprobante emitido con errores sin relación</option>
+            <option value="03">03 - No se llevó a cabo la operación</option>
+            <option value="04">04 - Operación nominiativa relacionada en una factura global</option>
+          </select>
+        </div>
+        <div class="space" id="grupoUID">
+          <p>Escribe el UID o el UUID/folio físcal del CFDI sustituto</p>
+          <input type="text" class="form-control" id="uid" name="uid" placeholder="Escribe el folio fiscal o uid">
+        </div>
+        <div class="space">
+          <button data-remodal-action="cancel" class="remodal-cancel">No</button>
+          <button class="remodal-confirm si-cancelar">Sí</button>
+        </div>
+      </div>
+      <div class="cancelando">
+        <div class="loader">Cancelando factura ...</div>
+      </div>
+      <div class="resultado">
+        <h1 id="message-response-one"> </h1>
+        <br>
+        <button data-remodal-action="confirm" class="remodal-confirm">Aceptar</button>
+      </div>
+  </div>
   <?php
 }
 
@@ -483,10 +515,13 @@ function send_invoice(){
 }
 
 add_action( 'wp_ajax_cancel_invoice', 'cancel_invoice' );
+
 function cancel_invoice(){
   $invoiceUid = $_POST['uid'];
+  $motivo = $_POST['motivo'];
+  $folioSustituto = $_POST['folioSustituto'];
 
-  $cancelMessage = FacturaWrapper::cancelInvoice($invoiceUid);
+  $cancelMessage = FacturaWrapper::cancelInvoice($invoiceUid, $motivo, $folioSustituto);
 
   echo json_encode($cancelMessage, JSON_PRETTY_PRINT);
   wp_die();

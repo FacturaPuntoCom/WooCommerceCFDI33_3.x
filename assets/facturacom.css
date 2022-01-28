@@ -217,6 +217,23 @@ html.remodal-is-locked {
     border: 0
 }
 
+.remodal .cancelacion .space{
+    padding-bottom: 20px;
+}
+
+.remodal .cancelacion input, .remodal .cancelacion select {
+    width: 100%;
+    max-width: none;
+}
+
+.remodal .cancelacion, .remodal .cancelando, .remodal .resultado {
+    display: none;
+}
+
+.remodal .cancelando{
+    min-height: 200px;
+}
+
 @-webkit-keyframes remodal-opening-keyframes {
     from {
         -webkit-transform: scale(1.05);
