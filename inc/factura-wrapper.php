@@ -783,7 +783,7 @@ class FacturaWrapper{
             $precioiva = floatval(wc_format_decimal($item['meta']['item_total'], 2 ));
           }
           else{
-            $precioiva = floatval(wc_format_decimal($item['price'], 2 ));
+            $precioiva = floatval(wc_format_decimal($item['total'], 2 ));
           }
           //Reviso la configuración para saber si los precios incluyen iva
           if($configEntity['sitax'] == "true"){
