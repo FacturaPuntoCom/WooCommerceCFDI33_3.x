@@ -15,6 +15,10 @@ desde el panel de administración.
 de clientes.
 Reportes de historial de facturas y pedidos pendientes de facturar.
 
+## Feature 06/04/2022
+
+- Se sustituye la versión de timbrado de cfdi 3.3 por 4.0, por lo que los campos necesarios se modifican.
+
 ## Feature 24/01/2022
 
 - Se agrego F_IVA para permitir el IVA individual por producto

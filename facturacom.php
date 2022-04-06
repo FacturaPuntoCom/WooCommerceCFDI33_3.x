@@ -3,7 +3,7 @@
 * Plugin name: Factura punto com para woocommerce
 * Plugin URI: http://factura.com
 * Description: Conecta tu tienda de woocommerce para que tus clientes puedan facturar todos los pedidos.
-* Version: 1.6.8
+* Version: 1.7.0
 * Author: Factura.com
 */
 
@@ -12,7 +12,7 @@ include( plugin_dir_path( __FILE__ ) . 'inc/factura-wrapper.php');
 define( 'FACTURACOM__PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'FACTURACOM__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'FACTURACOM__APIURL', 'https://factura.com/api/');
-define( 'FACTURACOM__APIURLDEV', 'http://devfactura.in/api/');
+define( 'FACTURACOM__APIURLDEV', 'https://sandbox.factura.com/api/');
 define( 'FACTURACOM__SYSURL', 'https://factura.com/api/');
 
 //init hooks
@@ -433,6 +433,10 @@ function getUsoCfdi($dato){
     'D07'=>'Primas por seguros de gastos médicos',
     'D08'=>'Gastos de transportación escolar obligatoria',
     'D09'=>'Depósitos en cuentas para el ahorro, primas que tengan como base planes de pensiones',
+    'D10'=>'Pagos por servicios educativos (colegiaturas)',
+    'S01'=>'Sin efectos fiscales',
+    //'CP01'=>'Pagos', // solo para complementos de pagos
+    //'CN01'=>'Nómina', // solo para creación de nóminas
   );
 
   foreach ($c_usocfdi as $key => $name)
@@ -617,7 +621,7 @@ function create_client_callback(){
     $_REQUEST["g_email"] == null || $_REQUEST["f_calle"] == null || $_REQUEST["f_colonia"] == null ||
     $_REQUEST["f_cp"] == null || $_REQUEST["f_estado"] == null || $_REQUEST["f_exterior"] == null ||
     $_REQUEST["f_municipio"] == null || $_REQUEST["f_nombre"] == null ||
-    $_REQUEST["f_rfc"] == null || $_REQUEST["f_telefono"] == null ){
+    $_REQUEST["f_rfc"] == null || $_REQUEST["f_regimen"] == null || $_REQUEST["f_telefono"] == null ){
 
       $response = array(
         'success' => false,
@@ -689,14 +693,19 @@ function generate_invoice_callback(){
 
   $invoice = FacturaWrapper::generateInvoice($payment_data);
 
+  
+  if(!is_null($invoice)){
+    if($invoice->response == "success"){
+      //delete sessions
+      unset($_SESSION['customer']);
+      unset($_SESSION['order']);
+    }
+  }
+
   $response = array(
     'success' => true,
     'invoice' => $invoice
   );
-
-  //delete sessions
-  unset($_SESSION['customer']);
-  unset($_SESSION['order']);
 
   echo json_encode($response, JSON_PRETTY_PRINT);
   die;
