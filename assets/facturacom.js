@@ -101,7 +101,6 @@ jQuery(document).ready( function($) {
     }
 
   });
-
   
   //Save configuration
   if( $('#facturacom_settings').length ){
@@ -257,6 +256,28 @@ jQuery(document).ready( function($) {
   //vars
   var order_data, customer_data, invoice_data;
 
+  const regimenes = [
+    { value: '601', label : 'General de Ley Personas Morales' },
+    { value: '603', label : 'Personas Morales con Fines no Lucrativos' },
+    { value: '605', label : 'Sueldos y Salarios e Ingresos Asimilados a Salarios' },
+    { value: '606', label : 'Arrendamiento' },
+    { value: '607', label : 'Régimen de Enajenación o Adquisición de Bienes' },
+    { value: '608', label : 'Demás ingresos' },
+    { value: '610', label : 'Residentes en el Extranjero sin Establecimiento Permanente en México' },
+    { value: '611', label : 'Ingresos por Dividendos (socios y accionistas)' },
+    { value: '612', label : 'Personas Físicas con Actividades Empresariales y Profesionales' },
+    { value: '614', label : 'Ingresos por intereses' },
+    { value: '615', label : 'Régimen de los ingresos por obtención de premios' },
+    { value: '616', label : 'Sin obligaciones fiscales' },
+    { value: '620', label : 'Sociedades Cooperativas de Producción que optan por diferir sus ingresos' },
+    { value: '621', label : 'Incorporación Fiscal' },
+    { value: '622', label : 'Actividades Agrícolas, Ganaderas, Silvícolas y Pesqueras' },
+    { value: '623', label : 'Opcional para Grupos de Sociedades' },
+    { value: '624', label : 'Coordinados' },
+    { value: '625', label : 'Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas' },
+    { value: '626', label : 'Régimen Simplificado de Confianza' }
+  ];
+
   String.prototype.capitalize = function() {
     return this.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
   };
@@ -369,6 +390,7 @@ jQuery(document).ready( function($) {
     //receptor
     $('#receptor-nombre').text(customer_data.RazonSocial);
     $('#receptor-rfc').text(customer_data.RFC);
+    $('#receptor-regimen').text(customer_data.Regimen);
     $('#receptor-direccion').text(customer_data.Calle + ' ' + customer_data.Numero + ' ' + customer_data.Interior);
     $('#receptor-direccion-zone').text(customer_data.Colonia + '. CP: ' + customer_data.CodigoPostal);
     $('#receptor-direccion-zone-city').text(customer_data.Ciudad + ', ' + customer_data.Estado
@@ -636,6 +658,13 @@ jQuery(document).ready( function($) {
     $('#fiscal-cp').val(data.CodigoPostal);
     $('#fiscal-telefono').val(data.Contacto.Telefono);
 
+    if(data.Regimen != null){
+      let re = regimenes.find(r => r.label == data.Regimen)
+      if(re != undefined){
+        $('#fiscal-regimen').val(re.value);
+      }
+    }
+
     $('#step-two [type=input]').removeAttr('readonly');
   }
 
@@ -646,6 +675,7 @@ jQuery(document).ready( function($) {
       $('#general-email').removeAttr('readonly');
 
       $('#fiscal-rfc').removeAttr('readonly');
+      $('#fiscal-regimen').removeAttr('disabled');
       $('#fiscal-nombre').removeAttr('readonly');
       $('#fiscal-calle').removeAttr('readonly');
       $('#fiscal-exterior').removeAttr('readonly');
@@ -668,6 +698,7 @@ jQuery(document).ready( function($) {
       $('#general-email').attr('readonly','readonly');
 
       $('#fiscal-rfc').attr('readonly','readonly');
+      $('#fiscal-regimen').attr('disabled', 'disabled');
       $('#fiscal-nombre').attr('readonly','readonly');
       $('#fiscal-calle').attr('readonly','readonly');
       $('#fiscal-exterior').attr('readonly','readonly');
@@ -766,8 +797,17 @@ jQuery(document).ready( function($) {
           item.removeClass("input_error");
           isValid.push("true");
         }
-
       });
+
+      if($('#fiscal-regimen').val().length == 0){
+        $("label[for='fiscal-regimen']").addClass("input_error");
+        $('#fiscal-regimen').addClass("input_error");
+        isValid.push("false");
+      } else {
+        $("label[for='fiscal-regimen']").removeClass("input_error");
+        $('#fiscal-regimen').removeClass("input_error");
+        isValid.push("true");
+      }
 
       var valid = $.inArray( "false", isValid );
 
@@ -778,11 +818,7 @@ jQuery(document).ready( function($) {
         $('#f-step-two-form .error_msj').text('Por favor completa y/o corrige los datos.').show();
       }
 
-    }else{
-
     }
-
-
     return false;
   }
 
@@ -911,30 +947,40 @@ jQuery(document).ready( function($) {
       $("#step-two .loader_content").hide();
       return false;
     }
-
+    
     form_data = $(this).serializeArray();
+
+    let posicion = 0;
 
     data = {
       action        : 'create_client',
-      csrf          : form_data[0].value,
-      api_method    : form_data[1].value,
-      uid           : form_data[2].value,
-      g_nombre      : form_data[3].value,
-      g_apellidos   : form_data[4].value,
-      g_email       : form_data[5].value,
-      f_telefono    : form_data[6].value,
-      f_nombre      : form_data[7].value,
-      f_rfc         : form_data[8].value,
-      f_calle       : form_data[9].value,
-      f_exterior    : form_data[10].value,
-      f_interior    : form_data[11].value,
-      f_colonia     : form_data[12].value,
-      f_municipio   : form_data[13].value,
-      f_estado      : form_data[14].value,
-      f_pais        : form_data[15].value,
-      f_cp          : form_data[16].value,
+      csrf          : form_data[posicion++].value,
+      api_method    : form_data[posicion++].value,
+      uid           : form_data[posicion++].value,
+      g_nombre      : form_data[posicion++].value,
+      g_apellidos   : form_data[posicion++].value,
+      g_email       : form_data[posicion++].value,
+      f_telefono    : form_data[posicion++].value,
+      f_nombre      : form_data[posicion++].value,
+      f_rfc         : form_data[posicion++].value
+    };
+
+
+    if (form_data[9].name == 'fiscal-regimen'){
+      data.f_regimen = form_data[posicion++].value;
+    } else {
+      data.f_regimen = $('#fiscal-regimen').val();
     }
 
+    data.f_calle     = form_data[posicion++].value;
+    data.f_exterior  = form_data[posicion++].value;
+    data.f_interior  = form_data[posicion++].value;
+    data.f_colonia   = form_data[posicion++].value;
+    data.f_municipio = form_data[posicion++].value;
+    data.f_estado    = form_data[posicion++].value;
+    data.f_pais      = form_data[posicion++].value;
+    data.f_cp        = form_data[posicion++].value;
+    
     $.post(myAjax.ajaxurl, data, function(response) {
       $("#step-two .loader_content").hide();
       // console.log(response);
@@ -1007,7 +1053,16 @@ jQuery(document).ready( function($) {
         $("#step-four").stop().fadeIn("slow");
       }else{
         var inst = $('[data-remodal-id=respuesta-paso-uno]').remodal();
-        $('#message-response-one').text(response.invoice.message);
+
+        let msg = 'No se pudo crear el CFDI, error: '
+        
+        if (typeof response.invoice.message == 'object'){
+          msg += response.invoice.message.message;
+        } else {
+          msg += response.invoice.message;
+        }
+        $('#message-response-one').text(msg);
+
         inst.open();
         $('#btn-success-pdf').stop().hide();
         $('#btn-success-xml').stop().hide();

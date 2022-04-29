@@ -112,6 +112,31 @@ class FacturaWrapper{
     <input type="text" class="input-upper f-input f-top" id="fiscal-rfc" name="fiscal-rfc" value="" placeholder="12 o 13 dígitos" readonly />
     </div>
     <div class="input-group">
+    <label for="fiscal-regimen">Régimen fiscal</label>
+    <select id="fiscal-regimen" name="fiscal-regimen" class="input-cap f-select-two f-top" disabled>
+      <option value="">Selecciona un régimen fiscal</option>
+      <option value="601">General de Ley Personas Morales</option>
+      <option value="603">Personas Morales con Fines no Lucrativos</option>
+      <option value="605">Sueldos y Salarios e Ingresos Asimilados a Salarios</option>
+      <option value="606">Arrendamiento</option>
+      <option value="607">Régimen de Enajenación o Adquisición de Bienes</option>
+      <option value="608">Demás ingresos</option>
+      <option value="610">Residentes en el Extranjero sin Establecimiento Permanente en México</option>
+      <option value="611">Ingresos por Dividendos (socios y accionistas)</option>
+      <option value="612">Personas Físicas con Actividades Empresariales y Profesionales</option>
+      <option value="614">Ingresos por intereses</option>
+      <option value="615">Régimen de los ingresos por obtención de premios</option>
+      <option value="616">Sin obligaciones fiscales</option>
+      <option value="620">Sociedades Cooperativas de Producción que optan por diferir sus ingresos</option>
+      <option value="621">Incorporación Fiscal</option>
+      <option value="622">Actividades Agrícolas, Ganaderas, Silvícolas y Pesqueras</option>
+      <option value="623">Opcional para Grupos de Sociedades</option>
+      <option value="624">Coordinados</option>
+      <option value="625">Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas</option>
+      <option value="626">Régimen Simplificado de Confianza</option>
+    </select>
+    </div>
+    <div class="input-group">
     <label for="fiscal-calle">Calle</label>
     <input type="text" class="input-cap f-input f-no-top" id="fiscal-calle" name="fiscal-calle" value="" placeholder="Calle" readonly />
     </div>
@@ -143,6 +168,9 @@ class FacturaWrapper{
     <label for="fiscal-cp">C&oacute;digo Postal</label>
     <input type="text" class="input-cap f-input f-no-top f-bottom" id="fiscal-cp" name="fiscal-cp" value="" placeholder="Código postal" readonly />
     </div>
+    <div class="input-group">
+      <div class="error_msj"></div>
+    </div>
     <div class="clearfix"></div>
     <div class="buttons-right">
     <input type="button" class="f-submit f-back" id="step-two-button-back" style="background:'.$configEntity['colorheader'].'; color:'.$configEntity['colorfont'].';" name="f-back" value="Volver" data-f="2" />
@@ -150,7 +178,6 @@ class FacturaWrapper{
     <input type="submit" class="f-submit" id="step-two-button-next" style="background:'.$configEntity['colorheader'].'; color:'.$configEntity['colorfont'].';" name="f-submit" value="Siguiente" />
     </div>
     <div class="f-loading">Cargando...</div>
-    <div class="error_msj"></div>
     <div class="clearfix"></div>
     </form>
     </div>
@@ -193,6 +220,7 @@ class FacturaWrapper{
     <h3 class="invoice-header">Receptor</h3>
     <span id="receptor-nombre" class="ref-data"></span>
     <span id="receptor-rfc" class="ref-data"></span>
+    <span id="receptor-regimen" class="ref-data"></span>
     <span id="receptor-direccion" class="ref-data"></span>
     <span id="receptor-direccion-zone" class="ref-data"></span>
     <span id="receptor-direccion-zone-city" class="ref-data"></span>
@@ -285,6 +313,9 @@ class FacturaWrapper{
       <option value="D07">Primas por seguros de gastos médicos</option>
       <option value="D08">Gastos de transportación escolar obligatoria</option>
       <option value="D09">Depósitos en cuentas para el ahorro, primas que tengan como base planes de pensiones</option>
+      <option value="D10">Pagos por servicios educativos (colegiaturas)</option>
+      <option value="S01">Sin efectos fiscales</option>
+
       </select>
       </div>
       <div class="clearfix"></div>
@@ -343,9 +374,11 @@ class FacturaWrapper{
       <div class="clearfix"></div>
       <h4 id="result-email-msg"></h4>
       <h4 id="result-msg"></h4>
-      <a href="#" id="btn-success-email" class="btn-success invoice-button invoice-pdf" target="_blank">Enviar por correo electr&oacute;nico</a>
-      <button id="btn-success-pdf" class="btn-success invoice-button invoice-pdf" style="background:'.$configEntity['colorheader'].'!important; color:'.$configEntity['colorfont'].'!important;">Descargar PDF</button>
-      <button id="btn-success-xml" class="btn-success invoice-button invoice-xml" style="background:'.$configEntity['colorheader'].'!important; color:'.$configEntity['colorfont'].'!important;">Descargar XML</button>
+      <div class="invoice-success-screen">
+        <a href="#" id="btn-success-email" class="btn-success invoice-button invoice-pdf" target="_blank">Enviar por correo electr&oacute;nico</a>
+        <button id="btn-success-pdf" class="btn-success invoice-button invoice-pdf" style="background:'.$configEntity['colorheader'].'!important; color:'.$configEntity['colorfont'].'!important;">Descargar PDF</button>
+        <button id="btn-success-xml" class="btn-success invoice-button invoice-xml" style="background:'.$configEntity['colorheader'].'!important; color:'.$configEntity['colorfont'].'!important;">Descargar XML</button>
+      </div>
       </div>
       <div id="out-message">
       <h3>Ya puedes cerrar &eacute;sta p&aacute;gina o <a href="'.get_site_url().'">seguir navegando</a>.</h3>
@@ -396,7 +429,7 @@ class FacturaWrapper{
     static function getInvoices(){
 
       $configEntity = self::getConfigEntity();
-      $url     = $configEntity['apiurl'] . 'v3/cfdi33/list';
+      $url     = $configEntity['apiurl'] . 'v3/cfdi40/list';
       $request = 'GET';
 
       return WrapperApi::callCurl($url, $request);
@@ -417,7 +450,7 @@ class FacturaWrapper{
 
       $configEntity = self::getConfigEntity();
 
-      $url     = $configEntity['apiurl'] . 'v3/cfdi33/' . $uid . '/email';
+      $url     = $configEntity['apiurl'] . 'v3/cfdi40/' . $uid . '/email';
       $request = 'GET';
 
       return WrapperApi::callCurl($url, $request);
@@ -438,7 +471,7 @@ class FacturaWrapper{
 
       $configEntity = self::getConfigEntity();
 
-      $url = $configEntity['apiurl'] . 'v3/cfdi33/' . $uid . '/cancel';
+      $url = $configEntity['apiurl'] . 'v3/cfdi40/' . $uid . '/cancel';
       $data = ['motivo' => $motivo, 'folioSustituto' => $folioSustituto];
       $request = 'POST';
 
@@ -463,8 +496,8 @@ class FacturaWrapper{
       $configEntity = self::getConfigEntity();
 
       // $url = $configEntity['apiurl'] . 'invoices?rfc=' . $rfc . '&num_order=' . $orderId;
-      $url     = $configEntity['apiurl'] . 'v3/cfdi33/list?rfc=' . $rfc;
-      //$url = 'https://factura.com/api/v3/cfdi33/list' . '?rfc=' . $rfc;
+      $url     = $configEntity['apiurl'] . 'v3/cfdi40/list?rfc=' . $rfc;
+      //$url = 'https://factura.com/api/v3/cfdi40/list' . '?rfc=' . $rfc;
       $request = 'GET';
 
       // $invoideData = WrapperApi::callCurl($url, $request)->data;
@@ -677,8 +710,8 @@ class FacturaWrapper{
     static function generateInvoice($payment_data){
       $configEntity = self::getConfigEntity();
       // var_dump($configEntity);
-      $url = $configEntity['apiurl'] . "v3/cfdi33/create";
-      //$url = "https://factura.com/api/v3/cfdi33/create";
+      $url = $configEntity['apiurl'] . "v3/cfdi40/create";
+      //$url = "https://factura.com/api/v3/cfdi40/create";
 
       $request = 'POST';
 
@@ -915,6 +948,7 @@ class FacturaWrapper{
           "telefono"        => $data["f_telefono"],
           "razons"          => $data["f_nombre"],
           "rfc"             => $data["f_rfc"],
+          'regimen'         => $data["f_regimen"],
           "calle"           => $data["f_calle"],
           "numero_exterior" => $data["f_exterior"],
           "numero_interior" => $data["f_interior"],
@@ -952,7 +986,7 @@ class FacturaWrapper{
 
         $configEntity = self::getConfigEntity();
 
-        $url = $configEntity['apiurl'] . 'v3/cfdi33/'.$data['uid'].'/'.$data['type'];
+        $url = $configEntity['apiurl'] . 'v3/cfdi40/'.$data['uid'].'/'.$data['type'];
 
         $request = 'GET';
 

@@ -513,7 +513,7 @@ font-size: 15px;
 font-family: unset;
 }
 
-.step-block .step-content form .f-input {
+.step-block .step-content form .f-input, .step-block .step-content form .f-select-two {
   display: block;
 width: 100%;
 margin: 0px 0 10px;
@@ -594,7 +594,7 @@ color: #263238;
     margin: 8px auto
 }
 
-#f-step-two-form .input-group .f-input {
+#f-step-two-form .input-group .f-input, #f-step-two-form .input-group .f-select-two {
     margin: 0!important
 }
 
@@ -607,13 +607,19 @@ color: #263238;
     height: 43px
 }
 
+#f-step-two-form .f-select-two{
+    border-color: #67BA2F;
+    background-color: #f2f2f2;
+    width: 100%;
+}
+
 #f-step-two-form .f-input {
     border-color: #67BA2F;
     width: 100%;
     /*padding-left: 190px*/
 }
 
-#f-step-two-form .f-input:read-only {
+#f-step-two-form .f-input:read-only, #f-step-two-form .f-select-two:disabled {
     border-color: #c2c2c2
 }
 
@@ -1120,4 +1126,9 @@ table {
     box-shadow: 0 1px 0 #006799;
     color: #fff !important;
     text-decoration: none;
+}
+
+.invoice-success-screen{
+    display: flex;
+    justify-content: center;
 }
