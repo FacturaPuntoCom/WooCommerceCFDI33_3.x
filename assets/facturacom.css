@@ -13,7 +13,7 @@
     display: none
 }
 
-.button {
+.button-facturas {
     width: 125px;
     text-align: center
 }
@@ -910,7 +910,7 @@ table {
   border: 1px solid #4C637B !important;
 }
 
-,
+
 .invoice-button:active,
 .invoice-button:focus,
 .invoice-button:hover {

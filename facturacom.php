@@ -142,12 +142,12 @@ function facturacom_history(){
             <td><?php echo ucfirst($invoice->Status) ?></td>
             <td><?php echo "$".$invoice->Total ?></td>
             <td>
-              <a href="#" class="button download_file" data-uid="<?php echo $invoice->UID ?>" data-type="pdf">
+              <a href="#" class="button button-facturas download_file" data-uid="<?php echo $invoice->UID ?>" data-type="pdf">
                 PDF
               </a>
             </td>
             <td>
-              <a href="#" class="button download_file" data-uid="<?php echo $invoice->UID ?>" data-type="xml">
+              <a href="#" class="button button-facturas download_file" data-uid="<?php echo $invoice->UID ?>" data-type="xml">
                 XML
               </a>
             </td>
