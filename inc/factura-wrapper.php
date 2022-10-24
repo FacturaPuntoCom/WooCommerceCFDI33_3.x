@@ -767,20 +767,6 @@ class FacturaWrapper{
         $num_cta = $payment_data["account"];
       }
 
-      $params = array(
-        "rfc"           => $customer->RFC,
-        "items"         => $items,
-        "numerocuenta"  => $num_cta,
-        "formapago"     => "Pago en una Sola Exhibición",
-        "metodopago"    => $payment_data["method"],
-        "currencie"     => $order->currency,
-        "iva"           => 1,
-        "num_order"     => $order->id,
-        "seriefactura"  => $configEntity['serie'],
-        "save"          => "true",
-        "descuento"     => $discount, //$order->total_discount, // / 1.16, al parecer Woo pone el descuento sin IVA
-        'send_email' => true,
-      );
       //Consigo la serie
       $series = FacturaWrapper::check_serie();
       $serie = '';
@@ -795,45 +781,40 @@ class FacturaWrapper{
         "TipoCfdi" => "factura",
         "Receptor" => [
           "UID" => $customer->UID,
-          ],
-          // "LugarExpedicion" => "0",
-          // "Fecha" => date("Y/m/d"),
-          //"UsoCFDI" => $configEntity['UsoCFDI'],
-          "UsoCFDI" => $payment_data["cfdi_use"],
-          "Serie" => $serie->SerieID,
-          "MetodoPago" => "PUE",
-          "FormaPago" => $payment_data["method"],
-          "Moneda" => $order->currency,
-          "Conceptos" => array(),
-          'EnviarCorreo' => true,
-          "Redondeo" => 2,
-          "NumOrder" =>$order->id,
-          // "Cuenta" =>(int)$num_cta,
-        );
+        ],
+        "UsoCFDI" => $payment_data["cfdi_use"],
+        "Serie" => $serie->SerieID,
+        "MetodoPago" => "PUE",
+        "FormaPago" => $payment_data["method"],
+        "Moneda" => $order->currency,
+        "Conceptos" => array(),
+        'EnviarCorreo' => true,
+        "Redondeo" => 2,
+        "NumOrder" =>$order->id,
+        // "Cuenta" =>(int)$num_cta,
+      );
         foreach( $order->line_items as $item  ) {
           // var_dump(floatval(wc_format_decimal($item['meta']['item_total'], 2 )));
           if($item['F_ClaveProdServ'] != "78102203"){
-            $precioiva = floatval(wc_format_decimal($item['meta']['item_total'], 2 ));
+            $precio = floatval(wc_format_decimal($item['meta']['item_total'], 2 ));
           }
           else{
-            $precioiva = floatval(wc_format_decimal($item['total'], 2 ));
+            $precio = floatval(wc_format_decimal($item['total'], 2 ));
           }
-          //Reviso la configuración para saber si los precios incluyen iva
+        
+          if(isset($item['F_IVA']) && $item['F_IVA'] != "") {
+            $tasa = $item['F_IVA']/100;  
+          }else {
+            $tasa = 0.16;
+          }
+          
+          //Reviso la configuración para saber si los precios incluyen iva 
           if($configEntity['sitax'] == "true"){
-            $importe =$precioiva /116;
-            $importe = $importe *100;
-          }
-          if($configEntity['sitax'] == "false"){
-            $importe = $precioiva;
+            $importe = $precio / (1 + $tasa);
           }
 
-          // $precioiva = floatval(wc_format_decimal($item['meta']['item_total'], 2 ));
-          $tasaQuota = "0.16";
-          if(isset($item['F_IVA']) && $item['F_IVA'] != "") {
-            $tasaQuota = $item['F_IVA']/100;  
-            $taxx = wc_format_decimal($importe, 2 ) * $tasaQuota; 
-          }else {
-            $taxx = wc_format_decimal($importe, 2 ) * 0.16;
+          if($configEntity['sitax'] == "false"){
+            $importe = $precio;
           }
 
           if($item['type_tax'] == "none" || $item['type_tax'] == "shipping" && $item['F_ClaveProdServ'] != "78102203"){
@@ -847,20 +828,25 @@ class FacturaWrapper{
             );
           }
           else{
+
+            $valorUnitario = floatval(wc_format_decimal($importe, 6));
+            $Base = floatval(wc_format_decimal($valorUnitario * $item['quantity'], 6));
+            $Importe = floatval(wc_format_decimal($Base * $tasa, 6));
+
             $cfdi['Conceptos'][] = array(
               "ClaveProdServ" => $item['F_ClaveProdServ'],
               "Cantidad" => $item['quantity'],
               "ClaveUnidad" => $item['F_ClaveUnidad'],
               "Unidad" => $item['F_Unidad'],
-              "ValorUnitario" => floatval(wc_format_decimal($importe, 2 )),
+              "ValorUnitario" => $valorUnitario,
               "Descripcion" => $item['name'],
               "Impuestos" => array(
                 "Traslados" => array([
-                  "Base" => (floatval(wc_format_decimal($importe, 2 )))*$item['quantity'],
+                  "Base" => $Base,
                   "Impuesto" => "002",
                   "TipoFactor" => "Tasa",
-                  "TasaOCuota" => $tasaQuota,
-                  "Importe" => wc_format_decimal($taxx, 2 )*$item['quantity'],
+                  "TasaOCuota" => $tasa,
+                  "Importe" => $Importe
                   ]
                 ),
               ),
