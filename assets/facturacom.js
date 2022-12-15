@@ -426,6 +426,8 @@ jQuery(document).ready( function($) {
     var discount = Number(order_data.order_discount);
     var onlyShip = false;
     var prices_with_tax = order_data.price_with_tax;
+    var decimals = order_data.decimals;
+
     // var discount = Number(order_data.total_discount);
 
     var r = new Array(), j = -1;
@@ -567,9 +569,9 @@ jQuery(document).ready( function($) {
       r[++j] = '</td><td>';
       r[++j] = products[key]['quantity'];
       r[++j] = '</td><td>$';
-      r[++j] = (unit_price).formatMoney(2, '.', ',');
+      r[++j] = (unit_price).formatMoney(decimals, '.', ',');
       r[++j] = '</td><td>$';
-      r[++j] = (unit_subtotal).formatMoney(2, '.', ',');
+      r[++j] = (unit_subtotal).formatMoney(decimals, '.', ',');
       r[++j] = '</td></tr>';
 
       subtotal = Number(subtotal) + Number(unit_subtotal);
@@ -583,7 +585,7 @@ jQuery(document).ready( function($) {
       unit_price = 0;
     }
     $('#datails-body').html(r.join(''));
-    console.log(taxes);
+    // console.log(taxes);
     var grand_total = Number(order_data.total);
     // if(tax == 0){
     //     var total_iva = grand_total;

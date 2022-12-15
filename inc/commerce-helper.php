@@ -11,7 +11,19 @@ class CommerceHelper{
         }
         $order_post = get_post( $orderId );
         $configEntity = FacturaConfig::configEntity();
+
+        $decimals = get_option('woocommerce_price_num_decimals');
+
+        if(in_array($decimals, ['1','2','3','4','5','6'])){
+          $decimals = intval($decimals);
+        } else if ($decimals > 6){
+          $decimals = 6;
+        } else {
+          $decimals = 2;
+        }
+        
         $order_data = array(
+          'decimals'                  => $decimals,
           'price_with_tax'            => $configEntity['sitax'],
           'id'                        => $order->id,
           'order_number'              => $order->get_order_number(),
@@ -85,14 +97,14 @@ class CommerceHelper{
           // var_dump($F_ClaveProdServ, $F_Unidad, $F_ClaveUnidad);
           $order_data['line_items'][] = array(
             'id'         => $item_id,
-            'subtotal'   => wc_format_decimal( $order->get_line_subtotal( $item ), 2 ),
-            'total'      => wc_format_decimal( $order->get_line_total( $item ), 2 ),
-            'total_tax'  => wc_format_decimal( $order->get_item_tax( $item ), 2 ),
-            'price'      => wc_format_decimal( $order->get_item_total( $item ), 2 ) + wc_format_decimal( $order->get_item_tax( $item ), 2 ),
+            'subtotal'   => wc_format_decimal( $order->get_line_subtotal( $item ), $decimals),
+            'total'      => wc_format_decimal( $order->get_line_total( $item ), $decimals),
+            'total_tax'  => wc_format_decimal( $order->get_item_tax( $item ), $decimals),
+            'price'      => wc_format_decimal( $order->get_item_total( $item ), $decimals ) + wc_format_decimal( $order->get_item_tax( $item ), $decimals ),
             'meta'       => array(
-                'item_total' => wc_format_decimal( $order->get_item_total( $item ), 2 ),
-                'line_tax'   => wc_format_decimal( $order->get_line_tax( $item ), 2 ),
-                'item_tax'   => wc_format_decimal( $order->get_item_tax( $item ), 2 ),
+              'item_total' => wc_format_decimal( $order->get_item_total( $item ), $decimals ),
+              'line_tax'   => wc_format_decimal( $order->get_line_tax( $item ), $decimals ),
+              'item_tax'   => wc_format_decimal( $order->get_item_tax( $item ), $decimals ),
             ),
             //'quantity'   => (int) $item['qty'], Problemas con cantidades decimales (a granel, ejemplo: 0.25)
             'quantity'   => $item['qty'],
@@ -117,10 +129,10 @@ class CommerceHelper{
             if($shipping_item['method_id'] != 'free_shipping'){
                 $order_data['line_items'][] = array(
                     'id'         => $shipping_key,
-                    'subtotal'   => wc_format_decimal($shipping_item['cost'], 2),
-                    'total'      => wc_format_decimal($shipping_item['cost'], 2),
-                    'total_tax'  => round($order->order_shipping_tax, 2),
-                    'price'      => wc_format_decimal($shipping_item['cost'], 2) + round($order->order_shipping_tax, 2),
+                    'subtotal'   => wc_format_decimal($shipping_item['cost'], $decimals),
+                    'total'      => wc_format_decimal($shipping_item['cost'], $decimals),
+                    'total_tax'  => round($order->order_shipping_tax, $decimals),
+                    'price'      => wc_format_decimal($shipping_item['cost'], $decimals) + round($order->order_shipping_tax, $decimals),
                     'quantity'   => 1,
                     'tax_class'  => null,
                     'name'       => $shipping_item['name'],
