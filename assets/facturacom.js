@@ -424,7 +424,7 @@ jQuery(document).ready( function($) {
     var taxes    = 0;
     var products = order_data.line_items;
     var discount = Number(order_data.order_discount);
-    var onlyShip = false;
+    var tasaCero = false;
     var prices_with_tax = order_data.price_with_tax;
     var decimals = order_data.decimals;
 
@@ -517,6 +517,13 @@ jQuery(document).ready( function($) {
           calculate_tax = 0.16;
           if(products[key]['F_IVA']) {
             calculate_tax = products[key]['F_IVA']/100;
+          } 
+          else if(products[key]['total_tax'] && products[key]['total_tax'] != '0.00'){
+            calculate_tax =  Number((products[key]['total_tax']/products[key]['total']).toFixed(2));
+          }
+          else if(products[key]['total_tax'] && products[key]['total_tax'] == '0.00' && products[key]['tax_class'] == 'tasa-cero'){
+            calculate_tax = 0.00;
+            tasaCero = true;
           }
           pre_unit_price = Number(products[key]['total']/products[key]['quantity']);
           tax = Number(pre_unit_price * calculate_tax);
@@ -563,17 +570,17 @@ jQuery(document).ready( function($) {
       // console.log(discount);
 
       unit_subtotal = products[key]['quantity'] * unit_price;
-
-      r[++j] ='<tr><td>';
-      r[++j] = products[key]['name'];
-      r[++j] = '</td><td>';
-      r[++j] = products[key]['quantity'];
-      r[++j] = '</td><td>$';
-      r[++j] = (unit_price).formatMoney(decimals, '.', ',');
-      r[++j] = '</td><td>$';
-      r[++j] = (unit_subtotal).formatMoney(decimals, '.', ',');
-      r[++j] = '</td></tr>';
-
+      if(products[key]['type_tax'] != 'shipping' && products[key]['F_ClaveProdServ'] != '78102203' && unit_price != 0){
+        r[++j] ='<tr><td>';
+        r[++j] = products[key]['name'];
+        r[++j] = '</td><td>';
+        r[++j] = products[key]['quantity'];
+        r[++j] = '</td><td>$';
+        r[++j] = (unit_price).formatMoney(decimals, '.', ',');
+        r[++j] = '</td><td>$';
+        r[++j] = (unit_subtotal).formatMoney(decimals, '.', ',');
+        r[++j] = '</td></tr>';
+      }
       subtotal = Number(subtotal) + Number(unit_subtotal);
       console.log("subtotal " + subtotal)
       console.log("unit_subtotal " + unit_subtotal);
@@ -628,7 +635,7 @@ jQuery(document).ready( function($) {
     // console.log('total iva: ' + total_iva);
     // console.log('total: ' + total);
 
-    if(total_iva == 0){
+    if(total_iva == 0 && !tasaCero){
       $('#tr-iva').css('display','none');
     }
     $('#invoice-pmethod').text(payment_method); //order_data.payment_details.paid (para saber si está pagado)
@@ -919,6 +926,7 @@ jQuery(document).ready( function($) {
       // order_data = response.order;
       customer_data = response.customer;
       if(customer_data.status != "error"){
+        $("#f-step-two-form #apimethod").val("update"); //evita que se dupliquen clientes en el admin
         $('#f-step-two-form').children('#fiscal-rfc').val(customer_data.rfc);
       }
       // $('#step-two .step-instruction').addClass(response.invoice.class).text(response.invoice.message);

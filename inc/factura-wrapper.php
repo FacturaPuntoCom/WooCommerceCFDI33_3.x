@@ -804,7 +804,14 @@ class FacturaWrapper{
         
           if(isset($item['F_IVA']) && $item['F_IVA'] != "") {
             $tasa = $item['F_IVA']/100;  
-          }else {
+          }
+          else if(isset($item['tax_class']) && $item['tax_class'] != "tasa-cero" && $item['total_tax'] != '0.00'){
+            $tasa = round($item['total_tax']/$item['total'], 2);
+          }
+          else if(isset($item['tax_class']) && $item['tax_class'] == "tasa-cero"){
+            $tasa = 0.00;
+          }
+          else {
             $tasa = 0.16;
           }
           
@@ -828,29 +835,30 @@ class FacturaWrapper{
             );
           }
           else{
+            if($item['total'] != '0.00' && !is_null($item['total'])){
+              $valorUnitario = floatval(wc_format_decimal($importe, 6));
+              $Base = floatval(wc_format_decimal($valorUnitario * $item['quantity'], 6));
+              $Importe = floatval(wc_format_decimal($Base * $tasa, 6));
 
-            $valorUnitario = floatval(wc_format_decimal($importe, 6));
-            $Base = floatval(wc_format_decimal($valorUnitario * $item['quantity'], 6));
-            $Importe = floatval(wc_format_decimal($Base * $tasa, 6));
-
-            $cfdi['Conceptos'][] = array(
-              "ClaveProdServ" => $item['F_ClaveProdServ'],
-              "Cantidad" => $item['quantity'],
-              "ClaveUnidad" => $item['F_ClaveUnidad'],
-              "Unidad" => $item['F_Unidad'],
-              "ValorUnitario" => $valorUnitario,
-              "Descripcion" => $item['name'],
-              "Impuestos" => array(
-                "Traslados" => array([
-                  "Base" => $Base,
-                  "Impuesto" => "002",
-                  "TipoFactor" => "Tasa",
-                  "TasaOCuota" => $tasa,
-                  "Importe" => $Importe
-                  ]
+              $cfdi['Conceptos'][] = array(
+                "ClaveProdServ" => $item['F_ClaveProdServ'],
+                "Cantidad" => $item['quantity'],
+                "ClaveUnidad" => $item['F_ClaveUnidad'],
+                "Unidad" => $item['F_Unidad'],
+                "ValorUnitario" => $valorUnitario,
+                "Descripcion" => $item['name'],
+                "Impuestos" => array(
+                  "Traslados" => array([
+                    "Base" => $Base,
+                    "Impuesto" => "002",
+                    "TipoFactor" => "Tasa",
+                    "TasaOCuota" => $tasa,
+                    "Importe" => $Importe
+                    ]
+                  ),
                 ),
-              ),
-            );
+              );
+            }
           }
 
         }
