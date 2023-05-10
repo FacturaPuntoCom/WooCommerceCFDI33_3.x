@@ -880,7 +880,7 @@ class FacturaWrapper{
         return $invoiced;
       }
 
-      public function check_serie(){
+      static function check_serie(){
         $configEntity = self::getConfigEntity();
 
         $url = $configEntity['apiurl'] . "v1/series";
@@ -915,7 +915,7 @@ class FacturaWrapper{
       * @return Array
       *
       */
-      public function create_client($data){
+      static function create_client($data){
         $configEntity = self::getConfigEntity();
 
         if($data["api_method"] == "create"){
@@ -957,7 +957,7 @@ class FacturaWrapper{
       * @param integer $invoice_id invoice id
       * @return Array
       */
-      public function changeOrderStatus($new_status, $order_id){
+      static function changeOrderStatus($new_status, $order_id){
         global $wpdb;
 
         //change to invoiced
