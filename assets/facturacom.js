@@ -919,6 +919,7 @@ jQuery(document).ready( function($) {
       // order_data = response.order;
       customer_data = response.customer;
       if(customer_data.status != "error"){
+        $("#f-step-two-form #apimethod").val("Edit"); //evita que se dupliquen clientes en el catalogo de clientes
         $('#f-step-two-form').children('#fiscal-rfc').val(customer_data.rfc);
       }
       // $('#step-two .step-instruction').addClass(response.invoice.class).text(response.invoice.message);
