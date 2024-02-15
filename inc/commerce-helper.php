@@ -95,6 +95,10 @@ class CommerceHelper{
           // $F_Unidad = $product->get_attribute( 'F_Unidad' );
           // $F_ClaveUnidad = $product->get_attribute( 'F_ClaveUnidad' );
           // var_dump($F_ClaveProdServ, $F_Unidad, $F_ClaveUnidad);
+          if( $product->is_type( 'variation' ) )
+          {
+            $product = wc_get_product($product->get_parent_id());
+          }
           $order_data['line_items'][] = array(
             'id'         => $item_id,
             'subtotal'   => wc_format_decimal( $order->get_line_subtotal( $item ), $decimals),
