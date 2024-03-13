@@ -15,6 +15,10 @@ desde el panel de administración.
 de clientes.
 Reportes de historial de facturas y pedidos pendientes de facturar.
 
+## Feature 08/03/2024
+
+- Ahora se toma en cuenta la clave SKU que tienen asignado los productos para el timbrado. También se agrega el producto de tipo 'variable' como válido para el timbrado.
+
 ## Feature 24/08/2023
 
 - Se corrige el problema que ocasionaba que se duplicaran registros en el catalogo de clientes al timbrar un CFDI a través del plugin

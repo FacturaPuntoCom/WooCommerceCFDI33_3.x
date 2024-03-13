@@ -839,6 +839,7 @@ class FacturaWrapper{
               "ClaveUnidad" => $item['F_ClaveUnidad'],
               "Unidad" => $item['F_Unidad'],
               "ValorUnitario" => $valorUnitario,
+              "NoIdentificacion" => isset($item['sku']) ? $item['sku'] : '',
               "Descripcion" => $item['name'],
               "Impuestos" => array(
                 "Traslados" => array([
