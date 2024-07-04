@@ -532,7 +532,7 @@ jQuery(document).ready( function($) {
           tax = Number(pre_unit_price * calculate_tax);
           tax_ISR = Number(pre_unit_price * calculate_taxISR);
           taxes = taxes + (tax * products[key]['quantity']);
-          taxesISR = taxesISR + (tax * products[key]['quantity']);
+          taxesISR = taxesISR + (tax_ISR * products[key]['quantity']);
           unit_price = Number(pre_unit_price);
         }
         else{
@@ -547,7 +547,7 @@ jQuery(document).ready( function($) {
           pre_unit_price = Number(products[key]['total']/products[key]['quantity']);
           tax = Number(pre_unit_price * calculate_tax);
           tax_ISR = Number(pre_unit_price * calculate_taxISR);
-          taxesISR = taxesISR + (tax * products[key]['quantity']);
+          taxesISR = taxesISR + (tax_ISR * products[key]['quantity']);
           taxes = taxes + (tax * products[key]['quantity']);
           unit_price = Number(pre_unit_price);
         }
@@ -629,8 +629,8 @@ jQuery(document).ready( function($) {
       // console.log("pre_total: " + pre_total);
       pre_discount = Number(discount / tax);
       pre_discountISR = Number(discount / taxISR);
-      pre_subtotalISR = Number(subtotal-pre_discountISR);
       pre_subtotal = Number(subtotal - pre_discount);
+      pre_subtotalISR = Number(subtotal - pre_discountISR);
       total_isr = Number(pre_subtotal*calculate_taxISR);
       total_iva = Number(pre_subtotal*calculate_tax);
       total = Number(pre_subtotal+total_iva-total_isr);
