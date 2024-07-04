@@ -120,6 +120,7 @@ class CommerceHelper{
             'F_Unidad'        => $product->get_attribute( 'F_Unidad' ),
             'F_ClaveUnidad'        => $product->get_attribute( 'F_ClaveUnidad' ),
             'F_IVA'        => $product->get_attribute( 'F_IVA' ),
+            'F_ISR'      => $product->get_attribute( 'F_ISR' ),
             'price'   => wc_format_decimal($item['cost'], 2),
             'type_tax' => $product->get_tax_status(),
           );

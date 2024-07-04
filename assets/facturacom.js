@@ -422,6 +422,7 @@ jQuery(document).ready( function($) {
     //products
     var subtotal = 0;
     var taxes    = 0;
+    var taxesISR = 0;
     var products = order_data.line_items;
     var discount = Number(order_data.order_discount);
     var onlyShip = false;
@@ -473,13 +474,18 @@ jQuery(document).ready( function($) {
         else if(products[key]['type_tax'] == 'taxable'){
           console.log("taxable");
           calculate_tax = 0.16;
+          calculate_taxISR = 0;
           if(products[key]['F_IVA']) {
             calculate_tax = products[key]['F_IVA']/100;
           }
-          tax = Number(1 + calculate_tax);
+          if(products[key]['F_ISR']) {
+            calculate_taxISR = products[key]['F_ISR']/100;
+          }
+          tax = Number(1 + calculate_tax - calculate_taxISR);
           pre_unit_price = Number(products[key]['total']/products[key]['quantity']);
           unit_price = Number(pre_unit_price / tax);
-          taxes = taxes + ((unit_price * calculate_tax)*products[key]['quantity'])
+          taxes = taxes + ((unit_price * calculate_tax)*products[key]['quantity']);
+          taxesISR = taxesISR + ((unit_price * calculate_taxISR)*products[key]['quantity'])
         }
         else{
           pre_unit_price = Number(products[key]['total']/products[key]['quantity']);
@@ -515,21 +521,33 @@ jQuery(document).ready( function($) {
         else if(products[key]['type_tax'] == 'taxable'){
           console.log("texable");
           calculate_tax = 0.16;
+          calculate_taxISR = 0;
           if(products[key]['F_IVA']) {
             calculate_tax = products[key]['F_IVA']/100;
           }
+          if(products[key]['F_ISR']){
+            calculate_taxISR = products[key]['F_ISR']/100;
+          }
           pre_unit_price = Number(products[key]['total']/products[key]['quantity']);
           tax = Number(pre_unit_price * calculate_tax);
+          tax_ISR = Number(pre_unit_price * calculate_taxISR);
           taxes = taxes + (tax * products[key]['quantity']);
+          taxesISR = taxesISR + (tax * products[key]['quantity']);
           unit_price = Number(pre_unit_price);
         }
         else{
           calculate_tax = 0.16;
+          calculate_taxISR = 0;
           if(products[key]['F_IVA']) {
             calculate_tax = products[key]['F_IVA']/100;
           }
+          if(products[key]['F_ISR']) {
+            calculate_taxISR = products[key]['F_ISR']/100;
+          }
           pre_unit_price = Number(products[key]['total']/products[key]['quantity']);
           tax = Number(pre_unit_price * calculate_tax);
+          tax_ISR = Number(pre_unit_price * calculate_taxISR);
+          taxesISR = taxesISR + (tax * products[key]['quantity']);
           taxes = taxes + (tax * products[key]['quantity']);
           unit_price = Number(pre_unit_price);
         }
@@ -610,9 +628,12 @@ jQuery(document).ready( function($) {
       // total = Number(subtotal+total_iva);
       // console.log("pre_total: " + pre_total);
       pre_discount = Number(discount / tax);
+      pre_discountISR = Number(discount / taxISR);
+      pre_subtotalISR = Number(subtotal-pre_discountISR);
       pre_subtotal = Number(subtotal - pre_discount);
+      total_isr = Number(pre_subtotal*calculate_taxISR);
       total_iva = Number(pre_subtotal*calculate_tax);
-      total = Number(pre_subtotal+total_iva);
+      total = Number(pre_subtotal+total_iva-total_isr);
 
       $('#td-discount #invoice-discount').text('$'+discount.formatMoney(2, '.', ','));
       $('#td-discount').css({'display':'table-row'});
@@ -621,7 +642,8 @@ jQuery(document).ready( function($) {
     }else{
       // total_iva = grand_total-subtotal;
       total_iva = taxes;
-      total = Number(subtotal+total_iva);
+      total_isr = taxesISR;
+      total = Number(subtotal+total_iva-total_isr);
     }
 
     // console.log(order_data);
@@ -631,9 +653,13 @@ jQuery(document).ready( function($) {
     if(total_iva == 0){
       $('#tr-iva').css('display','none');
     }
+    if(total_isr == 0){
+      $('#tr-isr').css('display','none');
+    }
     $('#invoice-pmethod').text(payment_method); //order_data.payment_details.paid (para saber si está pagado)
     $('#invoice-subtotal').text('$'+subtotal.formatMoney(2, '.', ','));
     $('#invoice-iva').text('$'+(total_iva).formatMoney(2, '.', ','));
+    $('#invoice-isr').text('$'+(total_isr).formatMoney(2, '.', ','));
     $('#invoice-total').text('$'+(total).formatMoney(2, '.', ','));
 
   }

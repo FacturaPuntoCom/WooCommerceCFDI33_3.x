@@ -336,6 +336,10 @@ class FacturaWrapper{
       <td>IVA</td>
       <td><span id="invoice-iva"></span></td>
       </tr>
+      <tr id="tr-isr">
+      <td>ISR</td>
+      <td><span id="invoice-isr"></span></td>
+      </tr>
       <tr>
       <td>Total</td>
       <td><span id="invoice-total"></span></td>
@@ -807,10 +811,19 @@ class FacturaWrapper{
           }else {
             $tasa = 0.16;
           }
+
+          if(isset($item['F_ISR']) && $item['F_ISR'] != "") {
+            $tasaISR = $item['F_ISR']/100;  
+          }else {
+            $tasaISR = "";
+          }
           
           //Reviso la configuración para saber si los precios incluyen iva 
           if($configEntity['sitax'] == "true"){
-            $importe = $precio / (1 + $tasa);
+            if($tasaISR != "")
+              $importe = $precio / (1 + $tasa-$tasaISR);
+            else
+              $importe = $precio / (1 + $tasa);
           }
 
           if($configEntity['sitax'] == "false"){
@@ -828,32 +841,63 @@ class FacturaWrapper{
             );
           }
           else{
+            if($item['total'] != '0.00' && !is_null($item['total'])){
+              $valorUnitario = floatval(wc_format_decimal($importe, 6));
+              $Base = floatval(wc_format_decimal($valorUnitario * $item['quantity'], 6));
+              $Importe = floatval(wc_format_decimal($Base * $tasa, 6));
 
-            $valorUnitario = floatval(wc_format_decimal($importe, 6));
-            $Base = floatval(wc_format_decimal($valorUnitario * $item['quantity'], 6));
-            $Importe = floatval(wc_format_decimal($Base * $tasa, 6));
+              if($tasaISR != ""){
+                $ImporteISR = floatval(wc_format_decimal($Base * $tasaISR, 6));
 
-            $cfdi['Conceptos'][] = array(
-              "ClaveProdServ" => $item['F_ClaveProdServ'],
-              "Cantidad" => $item['quantity'],
-              "ClaveUnidad" => $item['F_ClaveUnidad'],
-              "Unidad" => $item['F_Unidad'],
-              "ValorUnitario" => $valorUnitario,
-              "NoIdentificacion" => isset($item['sku']) ? $item['sku'] : '',
-              "Descripcion" => $item['name'],
-              "Impuestos" => array(
-                "Traslados" => array([
-                  "Base" => $Base,
-                  "Impuesto" => "002",
-                  "TipoFactor" => "Tasa",
-                  "TasaOCuota" => $tasa,
-                  "Importe" => $Importe
-                  ]
-                ),
-              ),
-            );
+                $cfdi['Conceptos'][] = array(
+                  "ClaveProdServ" => $item['F_ClaveProdServ'],
+                  "Cantidad" => $item['quantity'],
+                  "ClaveUnidad" => $item['F_ClaveUnidad'],
+                  "Unidad" => $item['F_Unidad'],
+                  "ValorUnitario" => $valorUnitario,
+                  "NoIdentificacion" => isset($item['sku']) ? $item['sku'] : '',
+                  "Descripcion" => $item['name'],
+                  "Impuestos" => array(
+                    "Traslados" => array([
+                      "Base" => $Base,
+                      "Impuesto" => "002",
+                      "TipoFactor" => "Tasa",
+                      "TasaOCuota" => $tasa,
+                      "Importe" => $Importe
+                      ]
+                    ),
+                    "Retenidos" => array([
+                      "Base" => $Base,
+                      "Impuesto" => "001",
+                      "TipoFactor" => "Tasa",
+                      "TasaOCuota" => $tasaISR,
+                      "Importe" => $ImporteISR
+                    ]),
+                  ),
+                );
+              } else {
+                $cfdi['Conceptos'][] = array(
+                  "ClaveProdServ" => $item['F_ClaveProdServ'],
+                  "Cantidad" => $item['quantity'],
+                  "ClaveUnidad" => $item['F_ClaveUnidad'],
+                  "Unidad" => $item['F_Unidad'],
+                  "ValorUnitario" => $valorUnitario,
+                  "NoIdentificacion" => isset($item['sku']) ? $item['sku'] : '',
+                  "Descripcion" => $item['name'],
+                  "Impuestos" => array(
+                    "Traslados" => array([
+                      "Base" => $Base,
+                      "Impuesto" => "002",
+                      "TipoFactor" => "Tasa",
+                      "TasaOCuota" => $tasa,
+                      "Importe" => $Importe
+                      ]
+                    ),
+                  ),
+                );
+              }
+            }
           }
-
         }
 
         //echo "<pre>";
