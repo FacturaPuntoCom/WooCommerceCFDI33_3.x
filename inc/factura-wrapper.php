@@ -793,7 +793,7 @@ class FacturaWrapper{
         "NumOrder" =>$order->id,
         // "Cuenta" =>(int)$num_cta,
       );
-        foreach( $order->line_items as $item  ) {
+        foreach( $order->line_items as $i=> $item) {
           // var_dump(floatval(wc_format_decimal($item['meta']['item_total'], 2 )));
           if($item['F_ClaveProdServ'] != "78102203"){
             $precio = floatval(wc_format_decimal($item['meta']['item_total'], 2 ));
@@ -818,40 +818,43 @@ class FacturaWrapper{
           }
 
           if($item['type_tax'] == "none" || $item['type_tax'] == "shipping" && $item['F_ClaveProdServ'] != "78102203"){
-            $cfdi['Conceptos'][] = array(
-              "ClaveProdServ" => $item['F_ClaveProdServ'],
-              "Cantidad" => $item['quantity'],
-              "ClaveUnidad" => $item['F_ClaveUnidad'],
-              "Unidad" => $item['F_Unidad'],
-              "ValorUnitario" => floatval(wc_format_decimal($importe, 2 )),
-              "Descripcion" => $item['name'],
-            );
+            if($item['total'] != '0.00' && !is_null($item['total'])){
+              $cfdi['Conceptos'][] = array(
+                "ClaveProdServ" => $item['F_ClaveProdServ'],
+                "Cantidad" => $item['quantity'],
+                "ClaveUnidad" => $item['F_ClaveUnidad'],
+                "Unidad" => $item['F_Unidad'],
+                "ValorUnitario" => floatval(wc_format_decimal($importe, 2 )),
+                "Descripcion" => $item['name'],
+              );
+            }
           }
           else{
+            if($item['total'] != '0.00' && !is_null($item['total'])){
+              $valorUnitario = floatval(wc_format_decimal($importe, 6));
+              $Base = floatval(wc_format_decimal($valorUnitario * $item['quantity'], 6));
+              $Importe = floatval(wc_format_decimal($Base * $tasa, 6));
 
-            $valorUnitario = floatval(wc_format_decimal($importe, 6));
-            $Base = floatval(wc_format_decimal($valorUnitario * $item['quantity'], 6));
-            $Importe = floatval(wc_format_decimal($Base * $tasa, 6));
-
-            $cfdi['Conceptos'][] = array(
-              "ClaveProdServ" => $item['F_ClaveProdServ'],
-              "Cantidad" => $item['quantity'],
-              "ClaveUnidad" => $item['F_ClaveUnidad'],
-              "Unidad" => $item['F_Unidad'],
-              "ValorUnitario" => $valorUnitario,
-              "NoIdentificacion" => isset($item['sku']) ? $item['sku'] : '',
-              "Descripcion" => $item['name'],
-              "Impuestos" => array(
-                "Traslados" => array([
-                  "Base" => $Base,
-                  "Impuesto" => "002",
-                  "TipoFactor" => "Tasa",
-                  "TasaOCuota" => $tasa,
-                  "Importe" => $Importe
-                  ]
+              $cfdi['Conceptos'][] = array(
+                "ClaveProdServ" => $item['F_ClaveProdServ'],
+                "Cantidad" => $item['quantity'],
+                "ClaveUnidad" => $item['F_ClaveUnidad'],
+                "Unidad" => $item['F_Unidad'],
+                "ValorUnitario" => $valorUnitario,
+                "NoIdentificacion" => isset($item['sku']) ? $item['sku'] : '',
+                "Descripcion" => $item['name'],
+                "Impuestos" => array(
+                  "Traslados" => array([
+                    "Base" => $Base,
+                    "Impuesto" => "002",
+                    "TipoFactor" => "Tasa",
+                    "TasaOCuota" => $tasa,
+                    "Importe" => $Importe
+                    ]
+                  ),
                 ),
-              ),
-            );
+              );
+            }
           }
 
         }

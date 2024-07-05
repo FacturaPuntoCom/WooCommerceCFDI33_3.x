@@ -15,6 +15,10 @@ desde el panel de administración.
 de clientes.
 Reportes de historial de facturas y pedidos pendientes de facturar.
 
+## Feature 04/07/2024
+
+- Ahora ya no se toman en cuenta los conceptos y conceptos de envio con precio total de $0 durante el proceso de timbrado.
+
 ## Feature 08/03/2024
 
 - Ahora se toma en cuenta la clave SKU que tienen asignado los productos para el timbrado. También se agrega el producto de tipo 'variable' como válido para el timbrado.
