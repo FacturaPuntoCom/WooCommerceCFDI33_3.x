@@ -3,7 +3,7 @@
 * Plugin name: Factura punto com para woocommerce
 * Plugin URI: http://factura.com
 * Description: Conecta tu tienda de woocommerce para que tus clientes puedan facturar todos los pedidos.
-* Version: 1.8.2
+* Version: 1.8.3
 * Author: Factura.com
 */
 

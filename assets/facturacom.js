@@ -563,17 +563,17 @@ jQuery(document).ready( function($) {
       // console.log(discount);
 
       unit_subtotal = products[key]['quantity'] * unit_price;
-
-      r[++j] ='<tr><td>';
-      r[++j] = products[key]['name'];
-      r[++j] = '</td><td>';
-      r[++j] = products[key]['quantity'];
-      r[++j] = '</td><td>$';
-      r[++j] = (unit_price).formatMoney(decimals, '.', ',');
-      r[++j] = '</td><td>$';
-      r[++j] = (unit_subtotal).formatMoney(decimals, '.', ',');
-      r[++j] = '</td></tr>';
-
+      if(products[key]['type_tax'] != 'shipping' && products[key]['F_ClaveProdServ'] != '78102203' && unit_price != 0){
+        r[++j] ='<tr><td>';
+        r[++j] = products[key]['name'];
+        r[++j] = '</td><td>';
+        r[++j] = products[key]['quantity'];
+        r[++j] = '</td><td>$';
+        r[++j] = (unit_price).formatMoney(decimals, '.', ',');
+        r[++j] = '</td><td>$';
+        r[++j] = (unit_subtotal).formatMoney(decimals, '.', ',');
+        r[++j] = '</td></tr>';
+      }
       subtotal = Number(subtotal) + Number(unit_subtotal);
       console.log("subtotal " + subtotal)
       console.log("unit_subtotal " + unit_subtotal);
