@@ -11,9 +11,9 @@ include( plugin_dir_path( __FILE__ ) . 'inc/factura-wrapper.php');
 
 define( 'FACTURACOM__PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'FACTURACOM__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'FACTURACOM__APIURL', 'https://factura.com/api/');
+define( 'FACTURACOM__APIURL', 'https://api.factura.com/');
 define( 'FACTURACOM__APIURLDEV', 'https://sandbox.factura.com/api/');
-define( 'FACTURACOM__SYSURL', 'https://factura.com/api/');
+define( 'FACTURACOM__SYSURL', 'https://api.factura.com/');
 
 //init hooks
 add_action( 'init', 'facturacom_scripts' );
