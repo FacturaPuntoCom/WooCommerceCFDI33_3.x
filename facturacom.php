@@ -689,6 +689,7 @@ function generate_invoice_callback(){
     "method_text" => $_REQUEST["payment_t"],
     "account"     => $_REQUEST["num_cta_m"],
     "cfdi_use"    => $_REQUEST["cfdi_use"],
+    "method_pay"  => $_REQUEST["method_p"],
   );
 
   $invoice = FacturaWrapper::generateInvoice($payment_data);

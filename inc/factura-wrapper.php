@@ -280,6 +280,13 @@ class FacturaWrapper{
       <label for="f-num-cta" style="width: 285px;">&Uacute;ltimos 4 dígitos de tu cuenta o tarjeta</label>
       <input type="text" class="input-cap f-input f-no-top f-bottom f-digits" id="f-num-cta" name="f-num-cta" value="" placeholder="####" min="4" max="4"/>
       </div>
+      <div class="input-group">
+      <label for="select-metodoPago">* M&eacute;todo de pago</label>
+      <select id="select-metodoPago" class="input-cap f-input f-select">
+      <option value="PUE">Pago en una sola exhibición</option>
+      <option value="PPD">Pago en parcialidades o diferido</option>
+      </select>
+      </div>
       <div class="clearfix"></div>
       </form>
       </p>
@@ -784,7 +791,7 @@ class FacturaWrapper{
         ],
         "UsoCFDI" => $payment_data["cfdi_use"],
         "Serie" => $serie->SerieID,
-        "MetodoPago" => "PUE",
+        "MetodoPago" => $payment_data["method_pay"],
         "FormaPago" => $payment_data["method"],
         "Moneda" => $order->currency,
         "Conceptos" => array(),

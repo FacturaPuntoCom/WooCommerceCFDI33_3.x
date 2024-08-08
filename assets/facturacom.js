@@ -1007,6 +1007,7 @@ jQuery(document).ready( function($) {
     $("#step-three .loader_content").show();
 
     var selected_method = $( "#select-payment option:selected" ).val();
+    var selected_method_pay = $("#select-metodoPago option:selected" ).val();
     var selected_method_text = $( "#select-payment option:selected" ).text();
     var cfdi_use = $( "#cfdi-use option:selected" ).val();
 
@@ -1035,7 +1036,8 @@ jQuery(document).ready( function($) {
       payment_m     : selected_method,
       payment_t     : selected_method_text,
       num_cta_m     : num_cta_method,
-      cfdi_use      : cfdi_use
+      cfdi_use      : cfdi_use,
+      method_p      : selected_method_pay
     }
 
     $.post(myAjax.ajaxurl, data, function(response){
@@ -1083,6 +1085,17 @@ jQuery(document).ready( function($) {
       $("#num-cta-box").fadeIn('fast');
     }else{
       $("#num-cta-box").fadeOut('fast');
+    }
+  });
+
+  $("#select-metodoPago").change(function(){
+    var selected_method = $( "#select-metodoPago option:selected" ).val();
+
+    if(selected_method == 'PPD'){
+      $('#select-payment').attr("disabled", true);
+      $('#select-payment').val('99');
+    }else{
+      $('#select-payment').removeAttr('disabled');
     }
   });
 
