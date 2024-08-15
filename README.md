@@ -15,6 +15,14 @@ desde el panel de administración.
 de clientes.
 Reportes de historial de facturas y pedidos pendientes de facturar.
 
+## Feature 15/08/2024
+
+- Ahora el plugin acepta comillas dobles en el campo razon social, nombre y apellido.
+
+## Feature 13/08/2024
+
+- Ahora se muestra el descuento en el paso 3 del plugin, en el pdf y xml.
+
 ## Feature 04/07/2024
 
 - Ahora ya no se toman en cuenta los conceptos y conceptos de envio con precio total de $0 durante el proceso de timbrado.
