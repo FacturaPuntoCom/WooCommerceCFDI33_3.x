@@ -938,14 +938,16 @@ class FacturaWrapper{
           $url = $configEntity['apiurl'] . "v1/clients/".$data["uid"]."/update";
           //$url = 'https://factura.com/api/v1/' . "clients/".$data["uid"]."/update";
         }
-
+        $f_nombre=str_replace('\"', '"', $data["f_nombre"]);
+        $g_nombre=str_replace('\"', '"', $data["g_nombre"]);
+        $g_apellido=str_replace('\"', '"', $data["g_apellidos"]);
         $request = 'POST';
         $params = array(
-          "nombre"          => $data["g_nombre"],
-          "apellidos"       => $data["g_apellidos"],
+          "nombre"          => $g_nombre,
+          "apellidos"       => $g_apellido,
           "email"           => $data["g_email"],
           "telefono"        => $data["f_telefono"],
-          "razons"          => $data["f_nombre"],
+          "razons"          => $f_nombre,
           "rfc"             => $data["f_rfc"],
           'regimen'         => $data["f_regimen"],
           "calle"           => $data["f_calle"],
