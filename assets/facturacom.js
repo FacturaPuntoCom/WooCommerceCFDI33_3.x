@@ -423,11 +423,14 @@ jQuery(document).ready( function($) {
     var subtotal = 0;
     var taxes    = 0;
     var products = order_data.line_items;
-    var discount = Number(order_data.order_discount);
     var onlyShip = false;
     var prices_with_tax = order_data.price_with_tax;
     var decimals = order_data.decimals;
-
+    if(order_data.order_discount){
+      var discount = Number(order_data.order_discount);
+    }else{
+      var discount = Number(order_data.total_discount);
+    }
     // var discount = Number(order_data.total_discount);
 
     var r = new Array(), j = -1;
@@ -518,7 +521,7 @@ jQuery(document).ready( function($) {
           if(products[key]['F_IVA']) {
             calculate_tax = products[key]['F_IVA']/100;
           }
-          pre_unit_price = Number(products[key]['total']/products[key]['quantity']);
+          pre_unit_price = Number(products[key]['subtotal']/products[key]['quantity']);
           tax = Number(pre_unit_price * calculate_tax);
           taxes = taxes + (tax * products[key]['quantity']);
           unit_price = Number(pre_unit_price);
@@ -609,10 +612,9 @@ jQuery(document).ready( function($) {
       // total_iva = grand_total-subtotal;
       // total = Number(subtotal+total_iva);
       // console.log("pre_total: " + pre_total);
-      pre_discount = Number(discount / tax);
-      pre_subtotal = Number(subtotal - pre_discount);
-      total_iva = Number(pre_subtotal*calculate_tax);
-      total = Number(pre_subtotal+total_iva);
+      
+      total_iva = Number(order_data.total_tax);
+      total = Number(order_data.total);
 
       $('#td-discount #invoice-discount').text('$'+discount.formatMoney(2, '.', ','));
       $('#td-discount').css({'display':'table-row'});
