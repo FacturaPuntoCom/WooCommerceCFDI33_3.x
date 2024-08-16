@@ -720,7 +720,7 @@ class FacturaWrapper{
       $customer = $_SESSION['customer'];
 
       $items = array();
-      $discount = $order->cart_discount;
+      $discount = $order->total_discount;
       $calculate_tax = 1.16;
 
       foreach($order->line_items as $item){
@@ -796,10 +796,18 @@ class FacturaWrapper{
         foreach( $order->line_items as $i=> $item) {
           // var_dump(floatval(wc_format_decimal($item['meta']['item_total'], 2 )));
           if($item['F_ClaveProdServ'] != "78102203"){
-            $precio = floatval(wc_format_decimal($item['meta']['item_total'], 2 ));
+            if(isset($order->total_discount) && $order->total_discount > 0){
+              $precio = floatval(wc_format_decimal($item['subtotal']/$item['quantity'], 2 ));
+            }else{
+              $precio = floatval(wc_format_decimal($item['meta']['item_total'], 2 ));
+            }  
           }
           else{
-            $precio = floatval(wc_format_decimal($item['total'], 2 ));
+            if(isset($order->total_discount) && $order->total_discount > 0){
+              $precio = floatval(wc_format_decimal($item['subtotal']/$item['quantity'], 2 ));
+            }else{
+              $precio = floatval(wc_format_decimal($item['subtotal'], 2 ));
+            }
           }
         
           if(isset($item['F_IVA']) && $item['F_IVA'] != "") {
@@ -816,7 +824,7 @@ class FacturaWrapper{
           if($configEntity['sitax'] == "false"){
             $importe = $precio;
           }
-
+          $descuentoProd=$item['subtotal'] - $item['total'];
           if($item['type_tax'] == "none" || $item['type_tax'] == "shipping" && $item['F_ClaveProdServ'] != "78102203"){
             if($item['total'] != '0.00' && !is_null($item['total'])){
               $cfdi['Conceptos'][] = array(
@@ -832,7 +840,7 @@ class FacturaWrapper{
           else{
             if($item['total'] != '0.00' && !is_null($item['total'])){
               $valorUnitario = floatval(wc_format_decimal($importe, 6));
-              $Base = floatval(wc_format_decimal($valorUnitario * $item['quantity'], 6));
+              $Base = floatval(wc_format_decimal($order->total_discount > 0 ? $valorUnitario * $item['quantity']-$descuentoProd : $valorUnitario * $item['quantity'], 6));
               $Importe = floatval(wc_format_decimal($Base * $tasa, 6));
 
               $cfdi['Conceptos'][] = array(
@@ -843,6 +851,7 @@ class FacturaWrapper{
                 "ValorUnitario" => $valorUnitario,
                 "NoIdentificacion" => isset($item['sku']) ? $item['sku'] : '',
                 "Descripcion" => $item['name'],
+                "Descuento" => $descuentoProd,
                 "Impuestos" => array(
                   "Traslados" => array([
                     "Base" => $Base,
