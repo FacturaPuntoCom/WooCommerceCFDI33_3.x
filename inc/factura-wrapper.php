@@ -824,7 +824,7 @@ class FacturaWrapper{
           if($configEntity['sitax'] == "false"){
             $importe = $precio;
           }
-          $descuentoProd=$item['subtotal'] - $item['total'];
+          $descuentoProd=floatval(wc_format_decimal($item['subtotal'] - $item['total'], 2));
           if($item['type_tax'] == "none" || $item['type_tax'] == "shipping" && $item['F_ClaveProdServ'] != "78102203"){
             if($item['total'] != '0.00' && !is_null($item['total'])){
               $cfdi['Conceptos'][] = array(
