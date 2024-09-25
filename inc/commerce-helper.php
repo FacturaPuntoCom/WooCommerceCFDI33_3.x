@@ -136,6 +136,40 @@ class CommerceHelper{
 
         }
 
+        // add fees as a product
+        $feesTotal = 0;
+        $feesTotalTax = 0;
+        foreach($order->get_items('fee') as $item_id => $item_fee ){
+          // Get total amount
+          $feesTotal += $item_fee->get_total();
+          // Get total tax amount
+          $feesTotalTax += $item_fee->get_total_tax();
+        } 
+        if($feesTotal > 0) {
+          $orderItem = array(
+            'id'         => null,
+            'subtotal'   => wc_format_decimal($feesTotal, 2),
+            'total'      => wc_format_decimal($feesTotal, 2),
+            'total_tax'  => round($feesTotalTax, 2),
+            'price'      => wc_format_decimal($feesTotal, 2) + round($feesTotalTax, 2),
+            'meta'       => array(
+              'item_total' => wc_format_decimal( $feesTotal, 2 ),
+              'line_tax'   => wc_format_decimal( $feesTotalTax, 2 ),
+              'item_tax'   => wc_format_decimal( $feesTotalTax, 2 ),
+            ),
+            'quantity'   => 1,
+            'tax_class'  => null,
+            'name'       => 'Cuota',
+            'product_id' => null,
+            'sku'        => null,
+            'F_ClaveProdServ'  => "84111506",
+            'F_Unidad'  => "ACTIVIDAD",
+            'F_ClaveUnidad' => "ACT",
+            'type_tax' => null,
+          );
+          array_push($order_data['line_items'], $orderItem);
+        }
+
         return (object)$order_data;
     }
 
