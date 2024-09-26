@@ -15,6 +15,10 @@ desde el panel de administración.
 de clientes.
 Reportes de historial de facturas y pedidos pendientes de facturar.
 
+## Feature 24/09/2024
+
+- Se corrige redondeo de campo Descuento.
+
 ## Feature 15/08/2024
 
 - Ahora el plugin acepta comillas dobles en el campo razon social, nombre y apellido.
