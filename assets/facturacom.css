@@ -878,6 +878,11 @@ table {
     font-weight: 700;
     font-size: 15px
 }
+
+.invoice-details {
+    overflow-x: auto;
+}
+
 .table-details td{
     padding: 6px 10px;
 }
