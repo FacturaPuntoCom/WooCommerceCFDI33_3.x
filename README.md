@@ -15,6 +15,10 @@ desde el panel de administración.
 de clientes.
 Reportes de historial de facturas y pedidos pendientes de facturar.
 
+## Feature 28/03/2025
+
+- Se hace responsive la tabla Detalle de Pedido.
+
 ## Feature 24/09/2024
 
 - Se corrige redondeo de campo Descuento.
