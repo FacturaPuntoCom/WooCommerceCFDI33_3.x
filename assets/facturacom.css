@@ -574,7 +574,7 @@ color: #263238;
 }
 
 .step-block .step-content form .f-digits {
-    padding-left: 295px
+    overflow-x: auto;
 }
 
 #payment-method-form label {
