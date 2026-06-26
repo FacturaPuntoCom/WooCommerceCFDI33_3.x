@@ -15,6 +15,10 @@ desde el panel de administración.
 de clientes.
 Reportes de historial de facturas y pedidos pendientes de facturar.
 
+## Feature 19/06/2026
+
+- Se añade validación de RFC al consultar orden timbrada.
+
 ## Feature 28/03/2025
 
 - Se hace responsive la tabla Detalle de Pedido.

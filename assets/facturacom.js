@@ -893,14 +893,21 @@ jQuery(document).ready( function($) {
       */
       console.log(response);
       if(response.metadata != null && response.metadata.code == 101){
-        $('#result-msg-title').text(response.message);
-        $('#btn-success-pdf').stop().show();
-        $('#btn-success-xml').stop().show();
-        document.getElementById("btn-success-pdf").onclick=function(){downloadFile(response.metadata.uid, 'pdf')};
-        document.getElementById("btn-success-xml").onclick=function(){downloadFile(response.metadata.uid, 'xml')};
-        $('#step-one').stop().hide();
-        $('#step-four').stop().fadeIn('slow');
-        return false;
+        if(response.metadata.uid != null){
+          $('#result-msg-title').text(response.message);
+          $('#btn-success-pdf').stop().show();
+          $('#btn-success-xml').stop().show();
+          document.getElementById("btn-success-pdf").onclick=function(){downloadFile(response.metadata.uid, 'pdf')};
+          document.getElementById("btn-success-xml").onclick=function(){downloadFile(response.metadata.uid, 'xml')};
+          $('#step-one').stop().hide();
+          $('#step-four').stop().fadeIn('slow');
+          return false;
+        } else {
+          var inst = $('[data-remodal-id=respuesta-paso-uno]').remodal();
+          $('#message-response-one').text('La orden se encuentra timbrada; no obstante, el RFC ingresado no corresponde al RFC receptor de la factura');
+          inst.open();
+          return false;
+        }
       }
 
       if(!response.success) {
