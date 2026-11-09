@@ -938,16 +938,25 @@ class FacturaWrapper{
           $url = $configEntity['apiurl'] . "v1/clients/".$data["uid"]."/update";
           //$url = 'https://factura.com/api/v1/' . "clients/".$data["uid"]."/update";
         }
-        $f_nombre=str_replace('\"', '"', $data["f_nombre"]);
-        $g_nombre=str_replace('\"', '"', $data["g_nombre"]);
-        $g_apellido=str_replace('\"', '"', $data["g_apellidos"]);
+        // WordPress aplica addslashes() a $_REQUEST. Sin esto, una razón
+        // social como EVNT'S sale como EVNT\'S y el SAT rechaza el nombre.
+        // El str_replace corrige clientes que ya se guardaron con esa barra.
+        foreach (array(
+          'g_nombre', 'g_apellidos', 'g_email', 'f_telefono', 'f_nombre',
+          'f_calle', 'f_exterior', 'f_interior', 'f_colonia', 'f_municipio', 'f_estado',
+        ) as $field) {
+          if (isset($data[$field]) && is_string($data[$field])) {
+            $value = wp_unslash($data[$field]);
+            $data[$field] = str_replace(array("\\'", '\\"'), array("'", '"'), $value);
+          }
+        }
         $request = 'POST';
         $params = array(
-          "nombre"          => $g_nombre,
-          "apellidos"       => $g_apellido,
+          "nombre"          => $data["g_nombre"],
+          "apellidos"       => $data["g_apellidos"],
           "email"           => $data["g_email"],
           "telefono"        => $data["f_telefono"],
-          "razons"          => $f_nombre,
+          "razons"          => $data["f_nombre"],
           "rfc"             => $data["f_rfc"],
           'regimen'         => $data["f_regimen"],
           "calle"           => $data["f_calle"],
